@@ -6,8 +6,8 @@ InfoNest is a web-based chatbot designed to revolutionize how students, staff, a
 
 ## Team Members 👥
 
-*   **Thit Lwin Win Thant** ()
-*   **Myat Phone Paye** ()
+*   **[@thit2003](https://github.com/thit2003)** - **John**
+*   **[@KnoxHasGF](https://github.com/KnoxHasGF)** - **Knox**
 
 ## Problem Statement 😟
 
