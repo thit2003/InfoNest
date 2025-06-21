@@ -16,10 +16,12 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
+// MongoDB Connection with explicit dbName
 mongoose.connect(process.env.MONGO_URI, {
   serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
-  connectTimeoutMS: 30000
+  connectTimeoutMS: 30000,
+  dbName: 'InfoNestDB' // <--- ADD THIS LINE! Use the exact name of your database in Atlas
 })
   .then(() => console.log('MongoDB Connected Successfully!'))
   .catch(err => console.error('MongoDB connection error:', err));

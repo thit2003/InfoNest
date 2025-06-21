@@ -1,0 +1,32 @@
+# InfoNest-Rasa-Bot/config.yml
+
+language: en
+
+pipeline:
+- name: "WhitespaceTokenizer"
+- name: "RegexFeaturizer"
+- name: "LexicalSyntacticFeaturizer"
+- name: "CountVectorsFeaturizer"
+  analyzer: "char_wb"
+  min_ngram: 1
+  max_ngram: 4
+- name: "CountVectorsFeaturizer"
+  analyzer: "word"
+- name: "DIETClassifier"
+  epochs: 100
+  constrain_similarities: true
+- name: "EntitySynonymMapper"
+
+policies:
+- name: "MemoizationPolicy"
+  max_history: 5
+- name: "TEDPolicy"
+  max_history: 5
+  epochs: 100
+# --- REMOVE THIS LINE (RulePolicy is not in Rasa 1.x) ---
+#- name: "RulePolicy"
+# --------------------------------------------------------
+- name: "FallbackPolicy"
+  fallback_action_name: "utter_default"
+  core_threshold: 0.3
+  nlu_threshold: 0.4

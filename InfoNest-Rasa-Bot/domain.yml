@@ -1,0 +1,66 @@
+# InfoNest-Rasa-Bot/domain.yml
+version: "1.0" # Make sure this is "1.0" for Rasa 1.10.2
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
+
+intents:
+  - greet
+  - goodbye
+  - affirm
+  - deny
+  - bot_challenge
+  # --- NEW INTENTS ---
+  - ask_admission_deadline
+  - ask_course_info
+  - ask_faculty_contact
+  - ask_event_details
+  - ask_tuition_fees
+  # --- End NEW INTENTS ---
+
+responses:
+  utter_greet:
+  - text: "Hey! How can I help you today regarding Assumption University?"
+  utter_goodbye:
+  - text: "Goodbye! Have a great day."
+  utter_iamabot:
+  - text: "I am a bot, powered by Rasa."
+
+  # --- NEW RESPONSES ---
+  utter_ask_admission_deadline:
+  - text: "The general admission deadline is typically May 31st. For specific program deadlines, please check the official university website's admissions section."
+  - text: "Admission applications usually close on May 31st. Always verify this on the Assumption University admissions page."
+
+  utter_ask_course_info:
+  - text: "Assumption University offers a wide range of programs. Could you specify which faculty or field of study you're interested in?"
+  - text: "We have programs in Business, Engineering, Communication Arts, Biotechnology, and more. What are you looking for?"
+
+  utter_ask_faculty_contact:
+  - text: "Which department or office are you trying to reach? I can help you find contact information."
+  - text: "For contact details, please tell me the name of the department or the person you're looking for."
+
+  utter_ask_event_details:
+  - text: "Could you tell me what kind of event you're interested in, or give me a date range?"
+  - text: "To find upcoming events, I need a little more detail. Are you looking for a specific type of event?"
+
+  utter_ask_tuition_fees:
+  - text: "Tuition fees vary by program and student status (Thai/International). Please visit the official university website's finance or admissions section for the most accurate and up-to-date fee structure."
+  - text: "For detailed information on tuition and fees, I recommend checking the 'Fees & Financial Aid' section on the Assumption University website."
+
+  # Default fallback response if no intent is understood (optional, but good)
+  utter_default:
+  - text: "I'm sorry, I didn't quite understand that. Could you please rephrase your question?"
+  - text: "I'm still learning. Can you ask me something different or be more specific?"
+  # --- End NEW RESPONSES ---
+
+actions:
+  - utter_greet
+  - utter_goodbye
+  - utter_iamabot
+  # Add new utter actions here if you created new responses
+  - utter_ask_admission_deadline
+  - utter_ask_course_info
+  - utter_ask_faculty_contact
+  - utter_ask_event_details
+  - utter_ask_tuition_fees
+  - utter_default # Remember to add this if you use it in rules/stories
