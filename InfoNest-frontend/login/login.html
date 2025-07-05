@@ -1,3 +1,4 @@
+<!-- InfoNest-frontend/login/login.html (Updated parts) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,15 +16,20 @@
   <main class="form-container">
     <div class="form-box">
       <h2>Welcome Back</h2>
-      <input type="email" id="email" placeholder="username@gmail.com" />
-      <input type="password" id="password" placeholder="Password" />
-      <div class="extras">
-        <a href="#">Forgot Password?</a>
-      </div>
-      <button id="loginBtn" onclick="handleLogin()">Log in</button>
+      <!-- CHANGE ID HERE -->
+      <form id="loginForm"> <!-- Wrap inputs in a form and give it an ID -->
+        <input type="text" id="usernameInput" placeholder="Username" required /> <!-- Changed type to text, placeholder to Username -->
+        <input type="password" id="passwordInput" placeholder="Password" required />
+        <div class="extras">
+          <a href="#">Forgot Password?</a>
+        </div>
+        <!-- REMOVE onclick="handleLogin()" -->
+        <button type="submit" id="loginButton">Log in</button>
+      </form>
       <p class="switch-link">
         Don’t have an account? <a href="../register/register.html">Register</a>
       </p>
+      <p id="message" style="text-align: center; margin-top: 10px;"></p> <!-- Add for messages -->
     </div>
   </main>
 
