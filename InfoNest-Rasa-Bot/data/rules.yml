@@ -1,0 +1,8 @@
+# InfoNest-Rasa-Bot/data/rules.yml (Add this rule)
+    rules:
+      # ... existing rules ...
+
+      - rule: Handle general university info with Gemini
+        steps:
+        - intent: ask_general_university_info # Intent that triggers Gemini
+        - action: action_ask_gemini_for_university_info # Your custom action name

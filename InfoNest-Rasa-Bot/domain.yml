@@ -16,6 +16,7 @@ intents:
   - ask_faculty_contact
   - ask_event_details
   - ask_tuition_fees
+  - ask_general_university_info
   # --- End NEW INTENTS ---
 
 responses:
@@ -50,7 +51,10 @@ responses:
   # Default fallback response if no intent is understood (optional, but good)
   utter_default:
   - text: "I'm sorry, I didn't quite understand that. Could you please rephrase your question?"
-  - text: "I'm still learning. Can you ask me something different or be more specific?"
+  # --- ADD NEW RESPONSE FOR GENERAL INFO / FALLBACK ---
+
+  utter_ask_general_info:
+  - text: "Let me look up some general information about Assumption University for you..."
   # --- End NEW RESPONSES ---
 
 actions:
@@ -63,4 +67,7 @@ actions:
   - utter_ask_faculty_contact
   - utter_ask_event_details
   - utter_ask_tuition_fees
-  - utter_default # Remember to add this if you use it in rules/stories
+  - utter_default # Ensure this is listed
+  # --- ADD NEW ACTION ---
+  - utter_ask_general_info # Add this line to the actions list
+  # --- End NEW ACTION ---

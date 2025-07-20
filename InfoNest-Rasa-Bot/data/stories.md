@@ -31,3 +31,8 @@
 ## ask_tuition_fees_path
 * ask_tuition_fees
   - utter_ask_tuition_fees
+
+# data/stories.md (snippet)
+## general_university_info_story
+* ask_general_university_info
+  - utter_ask_general_info
