@@ -82,3 +82,9 @@
 - cost of attendance
 - tuition fees for international students
 - breakdown of university costs
+
+## intent:ask_general_university_info
+- tell me about assumption university
+- what is gemini ai
+- general info about AU
+- university overview

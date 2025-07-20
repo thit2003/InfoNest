@@ -1,43 +1,45 @@
-// src/routes/api.js (updated imports at the top)
+// src/routes/api.js
 
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const protect = require('../middleware/auth');
 const ChatHistory = require('../models/ChatHistory');
-const KnowledgeBase = require('../models/KnowledgeBase'); // <-- ADD/VERIFY THIS LINE
-const axios = require('axios'); // <-- ADD/VERIFY THIS LINE
+const KnowledgeBase = require('../models/KnowledgeBase');
+const axios = require('axios');
 
 // @desc    Register a new user
 // @route   POST /api/register
 // @access  Public
 router.post('/register', async (req, res) => {
-  const { username, password } = req.body; // Destructure username and password from request body
+  const { username, password } = req.body;
 
-  // Basic validation
   if (!username || !password) {
     return res.status(400).json({ error: 'Username and password are required' });
   }
 
   try {
-    // Check if user already exists
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res.status(400).json({ error: 'Username already exists' });
     }
 
-    // Create a new user instance
+    // --- REMOVE/COMMENT OUT DEBUG LOGS FOR REGISTRATION ---
+    // console.log(`[REGISTER DEBUG] Registering username: '${username}'`);
+    // console.log(`[REGISTER DEBUG] Password received (before hashing): '${password}' (Length: ${password.length})`);
+    // --- END DEBUG LOGS ---
+
     const newUser = new User({ username, password });
-    // Save the new user to the database (password will be hashed by pre-save hook in User model)
     await newUser.save();
 
-    // Respond with success message
+    // --- REMOVE/COMMENT OUT DEBUG LOGS ---
+    // console.log(`[REGISTER DEBUG] User saved to DB. Hashed password: ${newUser.password}`);
+    // --- END DEBUG LOGS ---
+
     res.status(201).json({ message: 'User registered successfully' });
 
   } catch (err) {
-    // Log the full error for debugging on the server side
-    console.error('Registration error caught in route:', err);
-    // Send a generic error response to the client
+    console.error('Registration error caught in route:', err); // Keep this for actual errors
     res.status(500).json({ error: 'Server error during registration' });
   }
 });
@@ -47,39 +49,49 @@ router.post('/register', async (req, res) => {
 // @route   POST /api/login
 // @access  Public
 router.post('/login', async (req, res) => {
-  const { username, password } = req.body; // Destructure username and password from request body
+  const { username, password } = req.body;
 
-  // Basic validation
   if (!username || !password) {
     return res.status(400).json({ error: 'Username and password are required' });
   }
 
   try {
-    // Find the user by username and include the password for comparison
-    const user = await User.findOne({ username }).select('+password'); // Explicitly select password
+    // --- REMOVE/COMMENT OUT DEBUG LOGS FOR LOGIN ---
+    // console.log(`[LOGIN DEBUG] Attempting login for username: '${username}'`);
+    // console.log(`[LOGIN DEBUG] Password received: '${password}' (Length: ${password.length})`);
+    // console.log(`[LOGIN DEBUG] ASCII codes of password: ${Array.from(password).map(char => char.charCodeAt(0)).join(',')}`);
+    // --- END DEBUG LOGS ---
 
-    // Check if user exists
+    const user = await User.findOne({ username }).select('+password');
+
+    // --- REMOVE/COMMENT OUT DEBUG LOGS ---
+    // console.log(`[LOGIN DEBUG] User found in DB:`, user ? user.username : 'None');
+    // if (user) {
+    //     console.log(`[LOGIN DEBUG] Hashed password from DB: ${user.password}`);
+    //     console.log(`[LOGIN DEBUG] Attempting to compare passwords...`);
+    // }
+    // --- END DEBUG LOGS ---
+
     if (!user) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(401).json({ error: 'Invalid credentials (user not found)' });
     }
 
-    // Compare provided password with hashed password in database
     const isMatch = await user.comparePassword(password);
+
+    // --- REMOVE/COMMENT OUT DEBUG LOGS ---
+    // console.log(`[LOGIN DEBUG] Password comparison result (isMatch): ${isMatch}`);
+    // --- END DEBUG LOGS ---
+
     if (!isMatch) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(401).json({ error: 'Invalid credentials (password mismatch)' });
     }
 
-    // Generate JWT token
     const token = user.getSignedJwtToken();
-
-    // Send success response with the token
     res.json({ success: true, token });
 
   } catch (err) {
-    // Log the full error for debugging on the server side
-    console.error('Login error caught in route:', err);
-    // Send a generic error response to the client
-    res.status(500).json({ error: 'Server error during login' });
+    console.error('Login error caught in route:', err); // Keep this for actual errors
+    res.status(500).json({ error: 'Server error during login.' });
   }
 });
 
@@ -89,13 +101,10 @@ router.post('/login', async (req, res) => {
 // @access  Private (requires JWT)
 router.get('/me', protect, async (req, res) => {
   try {
-    // req.userId is set by the 'protect' middleware
-    // Find user by ID and exclude the password field from the response
     const user = await User.findById(req.userId).select('-password');
     if (!user) {
         return res.status(404).json({ error: 'User not found' });
     }
-    // Respond with user details
     res.status(200).json({
         success: true,
         data: {
@@ -105,18 +114,11 @@ router.get('/me', protect, async (req, res) => {
         }
     });
   } catch (err) {
-    console.error('Error in /api/me route:', err);
+    console.error('Error in /api/me route:', err); // Keep this for actual errors
     res.status(500).json({ error: 'Server error fetching user data' });
   }
 });
 
-// src/routes/api.js (modified /api/chat route)
-
-// ... (your /register, /login, /me routes are above)
-
-// @desc    Send a message to the chatbot (and save to history)
-// @route   POST /api/chat
-// @access  Private (requires JWT)
 router.post('/chat', protect, async (req, res) => {
   const { message } = req.body;
   const userId = req.userId;
@@ -125,64 +127,59 @@ router.post('/chat', protect, async (req, res) => {
     return res.status(400).json({ error: 'Message content is required' });
   }
 
-  let botResponse = "I'm sorry, I couldn't find an answer for that right now. Please try rephrasing or ask a different question."; // Default fallback
+  let botResponse = "I'm sorry, I couldn't find an answer for that right now. Please try rephrasing or ask a different question.";
 
   try {
+    // --- 1. Get Intent from Rasa ---
     const rasaParseResponse = await axios.post('http://localhost:5005/model/parse', {
          text: message
     });
 
     const intentName = rasaParseResponse.data.intent.name;
     const confidence = rasaParseResponse.data.intent.confidence;
-    const entities = rasaParseResponse.data.entities;
 
-    // --- NEW DEBUGGING LOGS: Precise string inspection ---
-    console.log(`[DEBUG] Rasa detected intent: '${intentName}' (length: ${intentName.length})`);
-    console.log(`[DEBUG] ASCII codes of intentName: ${Array.from(intentName).map(char => char.charCodeAt(0)).join(',')}`);
-    console.log(`[DEBUG] Attempting to find KnowledgeBase entry for intent: '${intentName}'`);
-    // --- END NEW DEBUGGING LOGS ---
+    console.log(`Rasa detected intent: '${intentName}' with confidence: ${confidence}`);
 
-
+    // --- 2. Decide Where to Get the Answer ---
+    let kbEntry = null;
     if (intentName && confidence > 0.6) {
-        // *** Line where the query happens ***
-        const kbEntry = await KnowledgeBase.findOne({ intent: intentName });
-
-        // --- NEW DEBUGGING LOGS ---
-        console.log(`[DEBUG] KnowledgeBase.findOne() result:`, kbEntry ? 'Found document' : 'No document found');
+        kbEntry = await KnowledgeBase.findOne({ intent: intentName });
 
         if (kbEntry) {
-            console.log(`[DEBUG] Found KB entry intent: '${kbEntry.intent}' (length: ${kbEntry.intent.length})`);
-            console.log(`[DEBUG] KB entry intent ASCII codes: ${Array.from(kbEntry.intent).map(char => char.charCodeAt(0)).join(',')}`);
-            console.log(`[DEBUG] KB entry answer: '${kbEntry.answer}'`);
-        } else {
-            // If findOne fails, let's try to find *any* document and log its intent
-            console.log('[DEBUG] findOne failed. Attempting to list all intents from KB for comparison...');
-            const allKbEntries = await KnowledgeBase.find({}).select('intent -_id'); // Fetch all intents
-            if (allKbEntries.length > 0) {
-                console.log(`[DEBUG] All KB intents found:`);
-                allKbEntries.forEach((entry, index) => {
-                    console.log(`  [DEBUG]   ${index}: '${entry.intent}' (length: ${entry.intent.length})`);
-                    console.log(`  [DEBUG]      ASCII codes: ${Array.from(entry.intent).map(char => char.charCodeAt(0)).join(',')}`);
-                });
-            } else {
-                console.log('[DEBUG] No documents found in KnowledgeBase collection at all.');
-            }
-        }
-        // --- END NEW DEBUGGING LOGS ---
-
-        if (kbEntry) {
+            console.log(`Found KB entry for intent '${intentName}'.`);
             botResponse = kbEntry.answer;
         } else {
-            botResponse = `I understood your intent as '${intentName}', but I don't have a specific answer for that in my current knowledge base.`;
+            // --- 3. DELEGATE TO GEMINI API IF INTENT NOT IN KB ---
+            console.log(`No KB entry found for '${intentName}'. Attempting to use Gemini if configured.`);
+
+            // Access the globally configured model
+            if (global.geminiConfigured && global.geminiModel) {
+                const prompt = `As an AI assistant for Assumption University, answer the following user query: "${message}". Provide helpful details about the university.`;
+
+                try {
+                    const geminiResponse = await global.geminiModel.generateContent(prompt); // Use the global model
+                    const responseText = geminiResponse.response.text();
+                    botResponse = responseText;
+                    console.log(`Gemini API Response: ${botResponse}`);
+                } catch (geminiError) {
+                    console.error("Error calling Gemini API:", geminiError);
+                    botResponse = "Sorry, I encountered an error trying to get AI-generated information. Please try again later.";
+                }
+            } else {
+                botResponse = `I understood your intent as '${intentName}', but I don't have a specific answer in my knowledge base, and the AI assistant is not configured.`;
+            }
         }
+    } else {
+        console.log(`Rasa intent confidence too low for '${intentName}'. Falling back.`);
+        botResponse = "I'm sorry, I didn't quite understand that. Could you please rephrase your question?";
     }
 
+    // --- Save to History ---
     const newChat = new ChatHistory({
       user: userId,
       userMessage: message,
       botResponse: botResponse,
     });
-
     await newChat.save();
 
     res.status(200).json({
@@ -192,64 +189,27 @@ router.post('/chat', protect, async (req, res) => {
     });
 
   } catch (err) {
-    console.error('Error in /api/chat endpoint:', err);
+    console.error('Error in /api/chat endpoint:', err.message);
     if (err.response) {
         console.error('Rasa Server Error Response:', err.response.status, err.response.data);
-        res.status(500).json({ error: 'Failed to communicate with Rasa or process NLP response.' });
+        res.status(err.response.status || 500).json({ error: `Failed to communicate with Rasa. Status: ${err.response.status}` });
     } else if (err.code === 'ECONNREFUSED') {
         res.status(500).json({ error: 'Chatbot engine (Rasa) is not running or accessible. Please start it.' });
     } else {
+        console.error('General Server Error during chat processing:', err.stack);
         res.status(500).json({ error: 'Server error while processing chat.' });
     }
   }
 });
 
-// ... (your /history and /news routes below)
-
-module.exports = router;
-// @desc    Send a message to the chatbot (and save to history)
-// @route   POST /api/chat
-// @access  Private (requires JWT)
-router.post('/chat', protect, async (req, res) => {
-  const { message } = req.body; // User's message
-  const userId = req.userId; // Get user ID from the 'protect' middleware
-
-  // Basic validation
-  if (!message) {
-    return res.status(400).json({ error: 'Message content is required' });
-  }
-
-  try {
-    // --- PLACEHOLDER FOR NLP ENGINE INTEGRATION ---
-    // In later steps, 'botResponse' will come from your Rasa/Dialogflow interaction.
-    // For now, it's a simple echo.
-    let botResponse = `I received your message: "${message}". Thanks for asking! (Placeholder)`;
-    // --- END PLACEHOLDER ---
-
-    // Create a new chat history entry
-    const newChat = new ChatHistory({
-      user: userId,
-      userMessage: message,
-      botResponse: botResponse,
-      timestamp: new Date() // Explicitly set timestamp, though default is also Date.now
-    });
-
-    // Save the chat exchange to the database
-    await newChat.save();
-
-    // Respond to the client with the bot's response
-    res.status(200).json({
-      userMessage: message,
-      botResponse: botResponse,
-      historyId: newChat._id // Useful for client-side tracking
-    });
-
-  } catch (err) {
-    // Log the full error for debugging on the server side
-    console.error('Error in /api/chat endpoint:', err);
-    // Send a generic error response to the client
-    res.status(500).json({ error: 'Server error while processing chat' });
-  }
+// @desc    Example endpoint to fetch news (dummy data for now)
+// @route   GET /api/news
+// @access  Public (can be made private if needed)
+router.get('/news', (req, res) => {
+  res.json([
+    { title: 'Dummy News Article 1', content: 'This is the content of dummy news article 1.' },
+    { title: 'Dummy News Article 2', content: 'This is the content of dummy news article 2.' }
+  ]);
 });
 
 
@@ -257,26 +217,20 @@ router.post('/chat', protect, async (req, res) => {
 // @route   GET /api/chat/history
 // @access  Private (requires JWT)
 router.get('/history', protect, async (req, res) => {
-  const userId = req.userId; // Get user ID from the 'protect' middleware
+  const userId = req.userId;
 
   try {
-    // Find all chat history entries for the logged-in user
-    // Populate 'user' field if you want to include user details in the history response
     const history = await ChatHistory.find({ user: userId })
-                                    .sort({ timestamp: 1 }) // Sort by oldest message first
-                                    .limit(50); // Limit to last 50 messages to prevent too much data
+                                    .sort({ timestamp: 1 })
+                                    .limit(50);
 
-    // Respond with the chat history
     res.status(200).json({ success: true, count: history.length, data: history });
 
   } catch (err) {
-    // Log the full error for debugging on the server side
-    console.error('Error fetching chat history:', err);
-    // Send a generic error response to the client
+    console.error('Error fetching chat history:', err); // Keep this for actual errors
     res.status(500).json({ error: 'Server error while fetching chat history' });
   }
 });
 
 
-// Export the router to be used in index.js
 module.exports = router;
