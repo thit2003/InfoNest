@@ -6,55 +6,63 @@ const cors = require('cors');     // For Cross-Origin Resource Sharing
 const mongoose = require('mongoose'); // For MongoDB interaction
 require('dotenv').config();       // For loading environment variables from .env
 
-const apiRoutes = require('./routes/api'); // Import your API routes
+const genai = require('@google/generative-ai'); // This is the correct import for the Node.js library
+
+let geminiModel = null;
+let geminiConfigured = false;
+
+if (process.env.GEMINI_API_KEY) {
+  try {
+    // The configuration is done by instantiating the client with the API key
+    const generativeAI = new genai.GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    geminiModel = generativeAI.getGenerativeModel({ model: "gemini-2.5-pro" }); // Or your chosen model
+    geminiConfigured = true;
+    console.log("Gemini API configured successfully.");
+  } catch (error) {
+    console.error("Failed to configure Gemini API:", error);
+  }
+} else {
+  console.warn("GEMINI_API_KEY not found. Gemini integration disabled.");
+}
+// --- End Correct Gemini Initialization ---
+
+const apiRoutes = require('./routes/api');
 
 const app = express();
 
 // Middleware
-app.use(morgan('dev')); // Log HTTP requests to the console (e.g., GET /ping 200)
-app.use(cors());        // Enable CORS for frontend communication
-app.use(express.json()); // Parse incoming JSON request bodies
+app.use(morgan('dev'));
+app.use(cors());
+app.use(express.json());
 
-// MongoDB Connection
+// MongoDB Connection (This part is now working!)
 mongoose.connect(process.env.MONGO_URI, {
   serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
   connectTimeoutMS: 30000,
-  dbName: 'InfoNestDB' // Ensure this matches your MongoDB Atlas database name
+  dbName: 'InfoNestDB'
 })
   .then(() => console.log('MongoDB Connected Successfully!'))
   .catch(err => console.error('MongoDB connection error:', err));
 
+
+// --- Make Gemini objects globally accessible for api.js ---
+// It's generally better to pass these via dependency injection or module exports,
+// but for a quick setup, global variables can work.
+global.geminiModel = geminiModel;
+global.geminiConfigured = geminiConfigured;
+// --- End global access setup ---
+
+
 // Use the API routes from api.js
 app.use('/api', apiRoutes);
 
-// Simple test route (e.g., http://localhost:8000/ping)
+// Simple test route
 app.get('/ping', (req, res) => {
   res.send('pong');
 });
 
-// Handle 404 Not Found (if no route matches). This middleware must be placed LAST,
-// after all other routes and middleware that handle valid requests.
-app.use((req, res, next) => {
-    // Log the 404 for debugging purposes
-    console.log(`404 Not Found: ${req.method} ${req.url}`);
-    res.status(404).json({ message: 'Not Found' });
-});
-
-// Central error handling middleware. This must be the very last app.use() call,
-// after all routes and other middleware. It catches errors passed via next(err).
-app.use((err, req, res, next) => {
-    // Log the full error stack for debugging on the server side
-    console.error('Unhandled server error:', err.stack || err.message);
-
-    // Send a generic 500 Internal Server Error response to the client
-    // In a production environment, you might hide the 'err.stack' for security.
-    res.status(err.status || 500).json({
-        message: err.message || 'An unexpected server error occurred.',
-        error: process.env.NODE_ENV === 'production' ? {} : err.stack // Show stack trace only in development
-    });
-});
-
+// ... (your error handling middleware and app.listen) ...
 
 // Start the server
 const PORT = process.env.PORT || 8000;

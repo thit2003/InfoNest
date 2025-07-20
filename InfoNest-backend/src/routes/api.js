@@ -8,7 +8,6 @@ const ChatHistory = require('../models/ChatHistory');
 const KnowledgeBase = require('../models/KnowledgeBase');
 const axios = require('axios');
 
-
 // @desc    Register a new user
 // @route   POST /api/register
 // @access  Public
@@ -120,10 +119,6 @@ router.get('/me', protect, async (req, res) => {
   }
 });
 
-
-// @desc    Send a message to the chatbot (and save to history)
-// @route   POST /api/chat
-// @access  Private (requires JWT)
 router.post('/chat', protect, async (req, res) => {
   const { message } = req.body;
   const userId = req.userId;
@@ -132,61 +127,59 @@ router.post('/chat', protect, async (req, res) => {
     return res.status(400).json({ error: 'Message content is required' });
   }
 
-  let botResponse = "I'm sorry, I couldn't find an answer for that right now. Please try rephrasing or ask a different question."; // Default fallback
+  let botResponse = "I'm sorry, I couldn't find an answer for that right now. Please try rephrasing or ask a different question.";
 
   try {
+    // --- 1. Get Intent from Rasa ---
     const rasaParseResponse = await axios.post('http://localhost:5005/model/parse', {
          text: message
     });
 
     const intentName = rasaParseResponse.data.intent.name;
     const confidence = rasaParseResponse.data.intent.confidence;
-    const entities = rasaParseResponse.data.entities;
 
-    // --- REMOVE/COMMENT OUT DEBUG LOGS FOR CHAT ---
-    // console.log(`[DEBUG] Rasa detected intent: '${intentName}' (length: ${intentName.length})`);
-    // console.log(`[DEBUG] ASCII codes of intentName: ${Array.from(intentName).map(char => char.charCodeAt(0)).join(',')}`);
-    // console.log(`[DEBUG] Attempting to find KnowledgeBase entry for intent: '${intentName}'`);
-    // --- END DEBUG LOGS ---
+    console.log(`Rasa detected intent: '${intentName}' with confidence: ${confidence}`);
 
+    // --- 2. Decide Where to Get the Answer ---
+    let kbEntry = null;
     if (intentName && confidence > 0.6) {
-        const kbEntry = await KnowledgeBase.findOne({ intent: intentName });
-
-        // --- REMOVE/COMMENT OUT DEBUG LOGS ---
-        // console.log(`[DEBUG] KnowledgeBase.findOne() result:`, kbEntry ? 'Found document' : 'No document found');
-        // if (kbEntry) {
-        //     console.log(`[DEBUG] Found KB entry:`, kbEntry);
-        //     console.log(`[DEBUG] KB entry intent: '${kbEntry.intent}'`);
-        //     console.log(`[DEBUG] KB entry answer: '${kbEntry.answer}'`);
-        // } else {
-        //     // If findOne fails, let's try to find *any* document and log its intent
-        //     console.log('[DEBUG] findOne failed. Attempting to list all intents from KB for comparison...');
-        //     const allKbEntries = await KnowledgeBase.find({}).select('intent -_id'); // Fetch all intents
-        //     if (allKbEntries.length > 0) {
-        //         console.log(`[DEBUG] All KB intents found:`);
-        //         allKbEntries.forEach((entry, index) => {
-        //             console.log(`  [DEBUG]   ${index}: '${entry.intent}' (length: ${entry.intent.length})`);
-        //             console.log(`  [DEBUG]      ASCII codes: ${Array.from(entry.intent).map(char => char.charCodeAt(0)).join(',')}`);
-        //         });
-        //     } else {
-        //         console.log('[DEBUG] No documents found in KnowledgeBase collection at all.');
-        //     }
-        // }
-        // --- END DEBUG LOGS ---
+        kbEntry = await KnowledgeBase.findOne({ intent: intentName });
 
         if (kbEntry) {
+            console.log(`Found KB entry for intent '${intentName}'.`);
             botResponse = kbEntry.answer;
         } else {
-            botResponse = `I understood your intent as '${intentName}', but I don't have a specific answer for that in my current knowledge base.`;
+            // --- 3. DELEGATE TO GEMINI API IF INTENT NOT IN KB ---
+            console.log(`No KB entry found for '${intentName}'. Attempting to use Gemini if configured.`);
+
+            // Access the globally configured model
+            if (global.geminiConfigured && global.geminiModel) {
+                const prompt = `As an AI assistant for Assumption University, answer the following user query: "${message}". Provide helpful details about the university.`;
+
+                try {
+                    const geminiResponse = await global.geminiModel.generateContent(prompt); // Use the global model
+                    const responseText = geminiResponse.response.text();
+                    botResponse = responseText;
+                    console.log(`Gemini API Response: ${botResponse}`);
+                } catch (geminiError) {
+                    console.error("Error calling Gemini API:", geminiError);
+                    botResponse = "Sorry, I encountered an error trying to get AI-generated information. Please try again later.";
+                }
+            } else {
+                botResponse = `I understood your intent as '${intentName}', but I don't have a specific answer in my knowledge base, and the AI assistant is not configured.`;
+            }
         }
+    } else {
+        console.log(`Rasa intent confidence too low for '${intentName}'. Falling back.`);
+        botResponse = "I'm sorry, I didn't quite understand that. Could you please rephrase your question?";
     }
 
+    // --- Save to History ---
     const newChat = new ChatHistory({
       user: userId,
       userMessage: message,
       botResponse: botResponse,
     });
-
     await newChat.save();
 
     res.status(200).json({
@@ -196,18 +189,18 @@ router.post('/chat', protect, async (req, res) => {
     });
 
   } catch (err) {
-    console.error('Error in /api/chat endpoint:', err); // Keep this for actual errors
+    console.error('Error in /api/chat endpoint:', err.message);
     if (err.response) {
-        console.error('Rasa Server Error Response:', err.response.status, err.response.data); // Keep this for Rasa errors
-        res.status(500).json({ error: 'Failed to communicate with Rasa or process NLP response.' });
+        console.error('Rasa Server Error Response:', err.response.status, err.response.data);
+        res.status(err.response.status || 500).json({ error: `Failed to communicate with Rasa. Status: ${err.response.status}` });
     } else if (err.code === 'ECONNREFUSED') {
         res.status(500).json({ error: 'Chatbot engine (Rasa) is not running or accessible. Please start it.' });
     } else {
+        console.error('General Server Error during chat processing:', err.stack);
         res.status(500).json({ error: 'Server error while processing chat.' });
     }
   }
 });
-
 
 // @desc    Example endpoint to fetch news (dummy data for now)
 // @route   GET /api/news
