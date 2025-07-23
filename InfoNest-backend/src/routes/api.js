@@ -154,10 +154,18 @@ router.post('/chat', protect, async (req, res) => {
 
             // Access the globally configured model
             if (global.geminiConfigured && global.geminiModel) {
-                const prompt = `As an AI assistant for Assumption University, answer the following user query: "${message}". Provide helpful details about the university.`;
+                const prompt = `As an AI assistant for Assumption University, answer the following user query: "${message}". Provide a brief summary. Do not exceed 80 tokens.`;
 
                 try {
-                    const geminiResponse = await global.geminiModel.generateContent(prompt); // Use the global model
+                    const maxTokensFromEnv = parseInt(process.env.GEMINI_MAX_OUTPUT_TOKENS || '80', 10);
+                    console.log(`Using maxOutputTokens: ${maxTokensFromEnv}`);
+
+                    const geminiResponse = await global.geminiModel.generateContent(prompt, {
+                        generationConfig: {
+                            maxOutputTokens: maxTokensFromEnv,
+                            temperature: parseFloat(process.env.GEMINI_TEMPERATURE || '0.7'),
+                        }
+                    });
                     const responseText = geminiResponse.response.text();
                     botResponse = responseText;
                     console.log(`Gemini API Response: ${botResponse}`);

@@ -6,7 +6,7 @@ const cors = require('cors');     // For Cross-Origin Resource Sharing
 const mongoose = require('mongoose'); // For MongoDB interaction
 require('dotenv').config();       // For loading environment variables from .env
 
-const genai = require('@google/generative-ai'); // This is the correct import for the Node.js library
+const genai = require('@google/generative-ai');
 
 let geminiModel = null;
 let geminiConfigured = false;
@@ -15,7 +15,7 @@ if (process.env.GEMINI_API_KEY) {
   try {
     // The configuration is done by instantiating the client with the API key
     const generativeAI = new genai.GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    geminiModel = generativeAI.getGenerativeModel({ model: "gemini-2.5-pro" }); // Or your chosen model
+    geminiModel = generativeAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" }); // Or your chosen model
     geminiConfigured = true;
     console.log("Gemini API configured successfully.");
   } catch (error) {

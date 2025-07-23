@@ -84,7 +84,144 @@
 - breakdown of university costs
 
 ## intent:ask_general_university_info
-- tell me about assumption university
-- what is gemini ai
-- general info about AU
-- university overview
+- what is Assumption University of Thailand known for?
+- give me an overview of AU's history
+- tell me about the assumption university's mission and values
+- what are the key features of Assumption University of Thailand?
+- describe the campuses of AU
+- what makes AU different from other universities in Thailand?
+- who founded Assumption University of Thailand?
+- what is the student population at AU?
+- what are the main faculties at AU?
+- tell me about AU's international programs
+- what is the AU motto?
+- what kind of extracurricular activities does AU offer?
+- what is the ranking of Assumption University?
+- does AU have partnerships with other universities?
+- what are the core principles of AU's education system?
+- what is the AU uniform policy?
+- tell me about AU's Catholic identity
+- what languages are used in instruction at AU?
+- what is the AU logo and what does it represent?
+- what are the colors of Assumption University of Thailand?
+- what is the meaning behind the name Assumption University of Thailand?
+- how does AU support student development?
+- what kind of research is conducted at AU?
+- what are AU’s notable alumni?
+- what is the AU student life like?
+
+## intent:ask_academic_calendar_deadlines
+- where can I check the academic calendar?
+- what's the add/drop deadline this term?
+- exam schedule for this semester?
+- when do classes start and end?
+- how do I find withdrawal deadlines?
+
+## intent:ask_course_registration
+- how do I register for courses?
+- what's AU SPARK?
+- where do I view my pre-registration time slot?
+- what happens if I don’t meet the course prerequisites?
+- how does AU SPARK notify me of registration issues?
+
+## intent:ask_campus_conflict
+- what if my classes are on different campuses on the same day?
+- how do I file a class schedule conflict?
+- how do I petition for campus conflicts?
+- what do I do if travel time between campuses isn’t enough?
+
+## intent:ask_seat_petition
+- how can I get a seat in a full class?
+- how do I submit a course-seat request?
+- where do I petition for a full course?
+- what if AU SPARK doesn't let me register because the class is full?
+
+## intent:ask_course_withdrawal
+- how do I withdraw from a class?
+- what’s the W grade and how do I avoid it?
+- when is the course withdrawal deadline?
+- how do I petition to drop a course?
+
+## intent:ask_section_change
+- how do I change my course section?
+- can I correct a wrong course code?
+- what’s the process for section changes?
+- do I need my instructor’s approval to switch sections?
+
+## intent:ask_major_change
+- how do I change my major?
+- can I transfer to another faculty?
+- what’s needed to switch degree programs?
+- where do I petition for a major change?
+
+## intent:ask_other_academic_petitions
+- how do I declare a minor?
+- I want to change my name—what's the process?
+- how do I request a leave of absence?
+- can I update my address in the system?
+
+## intent:ask_exam_conflict
+- my exams overlap—how do I fix it?
+- how do I file an exam time conflict petition?
+- what if my exams are in different campuses at the same time?
+- how do I get permission to reschedule an exam?
+
+## intent:ask_registrar_location_contact
+- where is the registrar’s office?
+- what’s the registrar’s phone number?
+- how do I contact enrollment services?
+- registrar office at Suvarnabhumi campus?
+
+## intent:ask_financial_management_location_contact
+- how much are the tuition fees?
+- where’s the Office of Financial Management?
+- I need help with fee petitions—who do I talk to?
+- scholarship info location?
+
+## intent:ask_its_help_location_contact
+- I can’t log in—who do I contact?
+- where’s the ITS help desk?
+- what’s the number for IT support?
+- where can I submit help tickets?
+
+## intent:ask_library_location_resources
+- where is the library?
+- how do I access online journals?
+- library hours at Hua Mak campus?
+- where’s the Cathedral of Learning Library?
+
+## intent:ask_medical_care_location
+- is there a health center on campus?
+- where can I get vaccinated?
+- where’s the clinic at Suvarnabhumi?
+- who handles student health services?
+
+## intent:ask_counseling_safety_services
+- where can I get counseling?
+- is there peer support on campus?
+- how do I report a safety issue?
+- where’s the security office?
+
+## intent:ask_career_services
+- when’s the next job fair?
+- how do I get internship help?
+- where’s the Career Development Center?
+- how do I upload my resume for employers?
+
+## intent:ask_sports_facilities
+- where can I play basketball?
+- how do I book the squash court?
+- gym hours on campus?
+- where’s the fitness studio?
+
+## intent:ask_housing_application
+- how do I apply for dorm housing?
+- where’s the housing office?
+- when is the next dorm lottery?
+- can I get details for room availability?
+
+## intent:ask_international_student_support
+- how do I get visa support?
+- where’s the Office of International Affairs?
+- what’s the process for international student orientation?
+- how can I register for airport pickup?
