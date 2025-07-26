@@ -8,7 +8,6 @@ const ChatHistory = require('../models/ChatHistory');
 const KnowledgeBase = require('../models/KnowledgeBase');
 const axios = require('axios');
 
-// @desc    Register a new user
 // @route   POST /api/register
 // @access  Public
 router.post('/register', async (req, res) => {
@@ -24,26 +23,16 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ error: 'Username already exists' });
     }
 
-    // --- REMOVE/COMMENT OUT DEBUG LOGS FOR REGISTRATION ---
-    // console.log(`[REGISTER DEBUG] Registering username: '${username}'`);
-    // console.log(`[REGISTER DEBUG] Password received (before hashing): '${password}' (Length: ${password.length})`);
-    // --- END DEBUG LOGS ---
-
     const newUser = new User({ username, password });
     await newUser.save();
-
-    // --- REMOVE/COMMENT OUT DEBUG LOGS ---
-    // console.log(`[REGISTER DEBUG] User saved to DB. Hashed password: ${newUser.password}`);
-    // --- END DEBUG LOGS ---
 
     res.status(201).json({ message: 'User registered successfully' });
 
   } catch (err) {
-    console.error('Registration error caught in route:', err); // Keep this for actual errors
+    console.error('Registration error caught in route:', err);
     res.status(500).json({ error: 'Server error during registration' });
   }
 });
-
 
 // @desc    Authenticate user and get token
 // @route   POST /api/login
@@ -56,31 +45,13 @@ router.post('/login', async (req, res) => {
   }
 
   try {
-    // --- REMOVE/COMMENT OUT DEBUG LOGS FOR LOGIN ---
-    // console.log(`[LOGIN DEBUG] Attempting login for username: '${username}'`);
-    // console.log(`[LOGIN DEBUG] Password received: '${password}' (Length: ${password.length})`);
-    // console.log(`[LOGIN DEBUG] ASCII codes of password: ${Array.from(password).map(char => char.charCodeAt(0)).join(',')}`);
-    // --- END DEBUG LOGS ---
-
     const user = await User.findOne({ username }).select('+password');
-
-    // --- REMOVE/COMMENT OUT DEBUG LOGS ---
-    // console.log(`[LOGIN DEBUG] User found in DB:`, user ? user.username : 'None');
-    // if (user) {
-    //     console.log(`[LOGIN DEBUG] Hashed password from DB: ${user.password}`);
-    //     console.log(`[LOGIN DEBUG] Attempting to compare passwords...`);
-    // }
-    // --- END DEBUG LOGS ---
 
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials (user not found)' });
     }
 
     const isMatch = await user.comparePassword(password);
-
-    // --- REMOVE/COMMENT OUT DEBUG LOGS ---
-    // console.log(`[LOGIN DEBUG] Password comparison result (isMatch): ${isMatch}`);
-    // --- END DEBUG LOGS ---
 
     if (!isMatch) {
       return res.status(401).json({ error: 'Invalid credentials (password mismatch)' });
@@ -90,13 +61,11 @@ router.post('/login', async (req, res) => {
     res.json({ success: true, token });
 
   } catch (err) {
-    console.error('Login error caught in route:', err); // Keep this for actual errors
+    console.error('Login error caught in route:', err);
     res.status(500).json({ error: 'Server error during login.' });
   }
 });
 
-
-// @desc    Get current logged in user details (example of a protected route)
 // @route   GET /api/me
 // @access  Private (requires JWT)
 router.get('/me', protect, async (req, res) => {
@@ -114,7 +83,7 @@ router.get('/me', protect, async (req, res) => {
         }
     });
   } catch (err) {
-    console.error('Error in /api/me route:', err); // Keep this for actual errors
+    console.error('Error in /api/me route:', err);
     res.status(500).json({ error: 'Server error fetching user data' });
   }
 });
@@ -154,10 +123,18 @@ router.post('/chat', protect, async (req, res) => {
 
             // Access the globally configured model
             if (global.geminiConfigured && global.geminiModel) {
-                const prompt = `As an AI assistant for Assumption University, answer the following user query: "${message}". Provide helpful details about the university.`;
+                const prompt = `As an AI assistant for Assumption University, answer the following user query: "${message}". Provide a brief summary. Do not exceed 80 tokens.`;
 
                 try {
-                    const geminiResponse = await global.geminiModel.generateContent(prompt); // Use the global model
+                    const maxTokensFromEnv = parseInt(process.env.GEMINI_MAX_OUTPUT_TOKENS || '80', 10);
+                    console.log(`Using maxOutputTokens: ${maxTokensFromEnv}`);
+
+                    const geminiResponse = await global.geminiModel.generateContent(prompt, {
+                        generationConfig: {
+                            maxOutputTokens: maxTokensFromEnv,
+                            temperature: parseFloat(process.env.GEMINI_TEMPERATURE || '0.7'),
+                        }
+                    });
                     const responseText = geminiResponse.response.text();
                     botResponse = responseText;
                     console.log(`Gemini API Response: ${botResponse}`);
@@ -202,7 +179,6 @@ router.post('/chat', protect, async (req, res) => {
   }
 });
 
-// @desc    Example endpoint to fetch news (dummy data for now)
 // @route   GET /api/news
 // @access  Public (can be made private if needed)
 router.get('/news', (req, res) => {
@@ -212,8 +188,6 @@ router.get('/news', (req, res) => {
   ]);
 });
 
-
-// @desc    Get user's chat history
 // @route   GET /api/chat/history
 // @access  Private (requires JWT)
 router.get('/history', protect, async (req, res) => {
@@ -227,7 +201,7 @@ router.get('/history', protect, async (req, res) => {
     res.status(200).json({ success: true, count: history.length, data: history });
 
   } catch (err) {
-    console.error('Error fetching chat history:', err); // Keep this for actual errors
+    console.error('Error fetching chat history:', err);
     res.status(500).json({ error: 'Server error while fetching chat history' });
   }
 });

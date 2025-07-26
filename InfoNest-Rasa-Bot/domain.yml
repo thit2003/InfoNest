@@ -18,6 +18,26 @@ intents:
   - ask_tuition_fees
   - ask_general_university_info
   # --- End NEW INTENTS ---
+  # 21/7/2025 Update
+  - ask_academic_calendar_deadlines
+  - ask_course_registration
+  - ask_campus_conflict
+  - ask_seat_petition
+  - ask_course_withdrawal
+  - ask_section_change
+  - ask_major_change
+  - ask_other_academic_petitions
+  - ask_exam_conflict
+  - ask_registrar_location_contact
+  - ask_financial_management_location_contact
+  - ask_its_help_location_contact
+  - ask_library_location_resources
+  - ask_medical_care_location
+  - ask_counseling_safety_services
+  - ask_career_services
+  - ask_sports_facilities
+  - ask_housing_application
+  - ask_international_student_support
 
 responses:
   utter_greet:
@@ -57,6 +77,64 @@ responses:
   - text: "Let me look up some general information about Assumption University for you..."
   # --- End NEW RESPONSES ---
 
+  # 21/7/2025 Update
+  utter_ask_academic_calendar_deadlines:
+  - text: "The Academic Calendar and deadlines are posted each semester on the Registrar's News page: https://registrar.au.edu/news/all/. Look for terms like 'Academic Calendar' or 'Add & Withdraw Course Deadline'."
+
+  utter_ask_course_registration:
+  - text: "Course registration happens through AU SPARK at https://ausparks.au.edu/. Log in during your assigned Pre-Registration Appointment to choose your courses. The system checks prerequisites automatically."
+
+  utter_ask_campus_conflict:
+  - text: "If you have classes on different campuses with conflicting times, resolve it during Add/Drop via AU SPARK or by submitting a 'Class Schedule Conflict Petition' through 'Online Petitions'."
+
+  utter_ask_seat_petition:
+  - text: "For full courses, submit a 'Course-Seat Petition' via AU SPARK under 'Online Petitions'. Choose the correct Faculty offering the course and provide your rationale."
+
+  utter_ask_course_withdrawal:
+  - text: "Withdrawals are allowed during the posted withdrawal period. Use AU SPARK's 'Withdrawal Petition' under 'Online Petitions'. After the deadline, withdrawals aren't possible."
+
+  utter_ask_section_change:
+  - text: "During Add/Drop, you can request section changes or correct course codes using AU SPARK's 'Section Change/Course Code Correction' form. Instructor and advisor approvals are required."
+
+  utter_ask_major_change:
+  - text: "To change your major or faculty, use AU SPARK's 'Change Faculty/Major' form. Dean/Department Head approval is needed and changes typically take effect next semester."
+
+  utter_ask_other_academic_petitions:
+  - text: "AU SPARK supports petitions like Name Change, Address Change, Minor Declaration, and Leave of Absence. Visit 'Online Petitions' or request paper forms at Registrar's Office if the system is down."
+
+  utter_ask_exam_conflict:
+  - text: "If your exams overlap, submit an 'Exam Time Conflict Petition' via AU SPARK in the first three weeks. Campus-based exam conflicts also require Dean's approval."
+
+  utter_ask_registrar_location_contact:
+  - text: "Registrar's Office is in Room P101 (Hua Mak) and Room SM116 (Suvarnabhumi). Call +66 2 783 2222 ext. 2629. Check their News page: https://registrar.au.edu/news/all/."
+
+  utter_ask_financial_management_location_contact:
+  - text: "The Office of Financial Management is in P102 (Hua Mak) and SM114 (Suvarnabhumi). Visit http://www.ofm.au.edu/ for fee schedules and petition forms."
+
+  utter_ask_its_help_location_contact:
+  - text: "ITS help is available in Room E101 (Hua Mak) and SCIT301 (Suvarnabhumi). Submit tickets or check updates at https://www.assumption.edu/.../information-technology-media-services."
+
+  utter_ask_library_location_resources:
+  - text: "Libraries: St. Gabriel's Library (L201 Hua Mak) and Cathedral of Learning Library (CL204 Suvarnabhumi). Access resources via https://library.au.edu/."
+
+  utter_ask_medical_care_location:
+  - text: "For medical help, visit Room M201 (Hua Mak) or QS204 (Suvarnabhumi). Hours are Mon–Fri, 08:00–16:30. Health services info: https://www.au.edu/..."
+
+  utter_ask_counseling_safety_services:
+  - text: "Counseling is managed via https://sa.au.edu/ccdc/. Safety services are in SEC100 (Gate 1, Hua Mak). Check https://sa.au.edu/safety/ for emergency info."
+
+  utter_ask_career_services:
+  - text: "Career guidance, job fairs, and internships are offered at Room A501 (Hua Mak). See updated schedules at https://www.assumption.edu/.../career-development-internship-center."
+
+  utter_ask_sports_facilities:
+  - text: "Hua Mak's John Paul II Sports Center and Suvarnabhumi Gym have schedules posted each term. For details, visit https://www.jp2center.au.edu/."
+
+  utter_ask_housing_application:
+  - text: "Housing is managed in D102 (Hua Mak) and QS116 (Suvarnabhumi). Visit https://housing.au.edu/ to check deadlines, fees, and availability."
+
+  utter_ask_international_student_support:
+  - text: "International students can contact Room L101 (Hua Mak) or CL118 (Suvarnabhumi). Visa and orientation updates are posted at http://www.oia.au.edu/."
+
 actions:
   - utter_greet
   - utter_goodbye
@@ -71,3 +149,24 @@ actions:
   # --- ADD NEW ACTION ---
   - utter_ask_general_info # Add this line to the actions list
   # --- End NEW ACTION ---
+
+  # 21/7/2025 Update
+  - utter_ask_academic_calendar_deadlines
+  - utter_ask_course_registration
+  - utter_ask_campus_conflict
+  - utter_ask_seat_petition
+  - utter_ask_course_withdrawal
+  - utter_ask_section_change
+  - utter_ask_major_change
+  - utter_ask_other_academic_petitions
+  - utter_ask_exam_conflict
+  - utter_ask_registrar_location_contact
+  - utter_ask_financial_management_location_contact
+  - utter_ask_its_help_location_contact
+  - utter_ask_library_location_resources
+  - utter_ask_medical_care_location
+  - utter_ask_counseling_safety_services
+  - utter_ask_career_services
+  - utter_ask_sports_facilities
+  - utter_ask_housing_application
+  - utter_ask_international_student_support
