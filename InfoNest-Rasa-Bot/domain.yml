@@ -10,14 +10,12 @@ intents:
   - affirm
   - deny
   - bot_challenge
-  # --- NEW INTENTS ---
   - ask_admission_deadline
   - ask_course_info
   - ask_faculty_contact
   - ask_event_details
   - ask_tuition_fees
   - ask_general_university_info
-  # --- End NEW INTENTS ---
   # 21/7/2025 Update
   - ask_academic_calendar_deadlines
   - ask_course_registration
@@ -42,12 +40,13 @@ intents:
 responses:
   utter_greet:
   - text: "Hey! How can I help you today regarding Assumption University?"
+
   utter_goodbye:
   - text: "Goodbye! Have a great day."
+  
   utter_iamabot:
   - text: "I am a bot, powered by Rasa."
 
-  # --- NEW RESPONSES ---
   utter_ask_admission_deadline:
   - text: "The general admission deadline is typically May 31st. For specific program deadlines, please check the official university website's admissions section."
   - text: "Admission applications usually close on May 31st. Always verify this on the Assumption University admissions page."
@@ -68,12 +67,7 @@ responses:
   - text: "Tuition fees vary by program and student status (Thai/International). Please visit the official university website's finance or admissions section for the most accurate and up-to-date fee structure."
   - text: "For detailed information on tuition and fees, I recommend checking the 'Fees & Financial Aid' section on the Assumption University website."
 
-  # Default fallback response if no intent is understood (optional, but good)
-  utter_default:
-  - text: "I'm sorry, I didn't quite understand that. Could you please rephrase your question?"
-  # --- ADD NEW RESPONSE FOR GENERAL INFO / FALLBACK ---
-
-  utter_ask_general_info:
+  utter_ask_general_university_info:
   - text: "Let me look up some general information about Assumption University for you..."
   # --- End NEW RESPONSES ---
 
@@ -147,7 +141,7 @@ actions:
   - utter_ask_tuition_fees
   - utter_default # Ensure this is listed
   # --- ADD NEW ACTION ---
-  - utter_ask_general_info # Add this line to the actions list
+  - utter_ask_general_university_info # Add this line to the actions list
   # --- End NEW ACTION ---
 
   # 21/7/2025 Update

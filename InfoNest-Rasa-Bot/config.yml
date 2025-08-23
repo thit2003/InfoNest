@@ -20,13 +20,12 @@ pipeline:
 policies:
 - name: "MemoizationPolicy"
   max_history: 10
+
 - name: "TEDPolicy"
   max_history: 10
   epochs: 200
-# --- REMOVE THIS LINE (RulePolicy is not in Rasa 1.x) ---
-#- name: "RulePolicy"
-# --------------------------------------------------------
+
 - name: "FallbackPolicy"
-  fallback_action_name: "utter_default"
+  fallback_action_name: "utter_ask_general_university_info"
   core_threshold: 0.3
   nlu_threshold: 0.4

@@ -119,9 +119,6 @@ const LoginPage = () => {
               </button>
             </div>
 
-            <div className="extras" style={{ textAlign: 'right', marginBottom: '15px' }}>
-              <Link to="#" style={{ color: '#4CAF50', textDecoration: 'none' }}>Forgot Password?</Link>
-            </div>
             <button type="submit" style={{
                 width: '100%', padding: '10px', backgroundColor: '#2f855a',
                 color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer'

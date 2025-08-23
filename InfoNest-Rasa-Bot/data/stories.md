@@ -34,7 +34,7 @@
 
 ## general_university_info_story
 * ask_general_university_info
-  - utter_ask_general_info
+  - utter_ask_general_university_info
 
 <!-- 21/7/2025 Update -->
 ## ask_academic_calendar_deadlines_path

@@ -111,7 +111,7 @@ router.post('/chat', protect, async (req, res) => {
 
     // --- 2. Decide Where to Get the Answer ---
     let kbEntry = null;
-    if (intentName && confidence > 0.6) {
+    if (intentName && confidence > 0.4) {
         kbEntry = await KnowledgeBase.findOne({ intent: intentName });
 
         if (kbEntry) {
@@ -123,7 +123,7 @@ router.post('/chat', protect, async (req, res) => {
 
             // Access the globally configured model
             if (global.geminiConfigured && global.geminiModel) {
-                const prompt = `As an AI assistant for Assumption University, answer the following user query: "${message}". Provide a brief summary. Do not exceed 80 tokens.`;
+                const prompt = `As an AI assistant for Assumption University of Thailand, answer the following user query: "${message}". Provide a summary. Do not exceed 80 tokens.`;
 
                 try {
                     const maxTokensFromEnv = parseInt(process.env.GEMINI_MAX_OUTPUT_TOKENS || '80', 10);
