@@ -77,10 +77,6 @@
 * ask_registrar_location_contact
   - utter_ask_registrar_location_contact
 
-## ask_financial_management_location_contact_path
-* ask_financial_management_location_contact
-  - utter_ask_financial_management_location_contact
-
 ## ask_its_help_location_contact_path
 * ask_its_help_location_contact
   - utter_ask_its_help_location_contact

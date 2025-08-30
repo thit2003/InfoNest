@@ -27,7 +27,6 @@ intents:
   - ask_other_academic_petitions
   - ask_exam_conflict
   - ask_registrar_location_contact
-  - ask_financial_management_location_contact
   - ask_its_help_location_contact
   - ask_library_location_resources
   - ask_medical_care_location
@@ -48,8 +47,7 @@ responses:
   - text: "I am a bot, powered by Rasa."
 
   utter_ask_admission_deadline:
-  - text: "The general admission deadline is typically May 31st. For specific program deadlines, please check the official university website's admissions section."
-  - text: "Admission applications usually close on May 31st. Always verify this on the Assumption University admissions page."
+  - text: "The application period for Semester 2/2025 at Assumption University of Thailand is from September 1 to October 22, 2025. The registration dates for this semester are scheduled for October 24 to 30, 2025."
 
   utter_ask_course_info:
   - text: "Assumption University offers a wide range of programs. Could you specify which faculty or field of study you're interested in?"
@@ -69,7 +67,6 @@ responses:
 
   utter_ask_general_university_info:
   - text: "Let me look up some general information about Assumption University for you..."
-  # --- End NEW RESPONSES ---
 
   # 21/7/2025 Update
   utter_ask_academic_calendar_deadlines:
@@ -101,9 +98,6 @@ responses:
 
   utter_ask_registrar_location_contact:
   - text: "Registrar's Office is in Room P101 (Hua Mak) and Room SM116 (Suvarnabhumi). Call +66 2 783 2222 ext. 2629. Check their News page: https://registrar.au.edu/news/all/."
-
-  utter_ask_financial_management_location_contact:
-  - text: "The Office of Financial Management is in P102 (Hua Mak) and SM114 (Suvarnabhumi). Visit http://www.ofm.au.edu/ for fee schedules and petition forms."
 
   utter_ask_its_help_location_contact:
   - text: "ITS help is available in Room E101 (Hua Mak) and SCIT301 (Suvarnabhumi). Submit tickets or check updates at https://www.assumption.edu/.../information-technology-media-services."
@@ -155,7 +149,6 @@ actions:
   - utter_ask_other_academic_petitions
   - utter_ask_exam_conflict
   - utter_ask_registrar_location_contact
-  - utter_ask_financial_management_location_contact
   - utter_ask_its_help_location_contact
   - utter_ask_library_location_resources
   - utter_ask_medical_care_location

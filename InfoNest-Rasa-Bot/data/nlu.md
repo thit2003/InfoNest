@@ -46,6 +46,11 @@
 - when do applications close?
 - cutoff date for admission
 - tell me about admission dates
+- admission deadline for November semester
+- admission after this semester
+- when is the registration
+- when can I apply for registration
+- registration deadline for sem 2/2025
 
 ## intent:ask_course_info
 - what courses do you offer?
@@ -54,6 +59,42 @@
 - courses for business administration
 - list available majors
 - programs offered by the university
+- What undergraduate programs do you have?
+- Do you offer any graduate degrees?
+- What diplomas and certificates can I study?
+- Are there any online programs?
+- What business courses do you run?
+- Tell me about the nursing program.
+- Which specializations are offered in Computer Science?
+- What engineering majors can I choose from?
+- Can you list all the postgraduate programs?
+- What are the available majors for international students?
+- Which courses have openings next intake?
+- What subjects do you teach in the Arts faculty?
+- How many credits are required for a degree?
+- Where can I find the course catalog?
+- What programs are available for working professionals?
+- What undergraduate majors are most popular?
+- Do you offer joint degree programs?
+- Do you have summer school courses?
+- Are there research-based master’s degrees?
+- What MBA specializations do you offer?
+- What language courses are available?
+- List the computer science modules for first year.
+- What electives can business students choose?
+- Do you offer internships as part of any programs?
+- Which courses require lab work?
+- Can you give me a list of faculty-led programs?
+- Which postgraduate diplomas do you offer?
+- Do you run any weekend courses?
+- What creative arts courses do you have?
+- How do I find course descriptions and syllabi?
+- What are the available IT-related courses?
+- Which science programs include fieldwork?
+- What are the required core courses for the law degree?
+- Which programs offer scholarships based on course of study?
+- Are there any accelerated bachelor’s programs?
+- What minors can business students add?
 
 ## intent:ask_faculty_contact
 - how can I contact the Computer Science department?
@@ -172,29 +213,25 @@
 - how do I contact enrollment services?
 - registrar office at Suvarnabhumi campus?
 
-## intent:ask_financial_management_location_contact
-- how much are the tuition fees?
-- where’s the Office of Financial Management?
-- I need help with fee petitions—who do I talk to?
-- scholarship info location?
-
 ## intent:ask_its_help_location_contact
-- I can’t log in—who do I contact?
+- I can’t log in my au account, who do I contact?
 - where’s the ITS help desk?
 - what’s the number for IT support?
-- where can I submit help tickets?
+- where is the IT building?
+- where can I get help for IT support?
 
 ## intent:ask_library_location_resources
 - where is the library?
-- how do I access online journals?
 - library hours at Hua Mak campus?
 - where’s the Cathedral of Learning Library?
+- library hours at Suvarnabhumi campus?
 
 ## intent:ask_medical_care_location
 - is there a health center on campus?
 - where can I get vaccinated?
 - where’s the clinic at Suvarnabhumi?
 - who handles student health services?
+- if I'm sick, where to contact?
 
 ## intent:ask_counseling_safety_services
 - where can I get counseling?
