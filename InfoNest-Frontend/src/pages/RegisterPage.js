@@ -1,8 +1,9 @@
 // src/pages/RegisterPage.js
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { BACKEND_API_BASE } from '../config';
+
 const infoNestLogo = '/logo.png';
 
 const RegisterPage = () => {
@@ -13,15 +14,13 @@ const RegisterPage = () => {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const API_BASE_URL = 'http://localhost:8000/api';
-
   const handleRegister = async (event) => {
     event.preventDefault(); // Prevent default form submission
 
     setMessage(''); // Clear previous messages
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/register`, { username, password });
+      const response = await axios.post(`${BACKEND_API_BASE}/register`, { username, password });
 
       if (response.status === 201) { // 201 Created is expected for successful registration
         setMessage('Registration successful! You can now log in.');

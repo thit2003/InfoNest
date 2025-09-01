@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; // For making API calls
 import '../styles/Home.css';
+import { BACKEND_API_BASE } from '../config';
 
 const infonestLogo = '/logo.png';
 const userAvatar = '/avatar.png';
@@ -14,8 +15,6 @@ const HomePage = () => {
   const [messages, setMessages] = useState([]);
   const [chatInput, setChatInput] = useState('');
   const [sidebarHistory, setSidebarHistory] = useState([]);
-
-  const API_BASE_URL = 'http://localhost:8000/api';
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -39,7 +38,7 @@ const HomePage = () => {
 
   const fetchChatHistory = async (token) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/history`, {
+      const response = await axios.get(`${BACKEND_API_BASE}/history`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

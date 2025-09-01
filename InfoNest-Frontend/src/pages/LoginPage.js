@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { BACKEND_API_BASE } from '../config';
 
 const infoNestLogo = '/logo.png';
 
@@ -14,15 +15,13 @@ const LoginPage = () => {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const API_BASE_URL = 'http://localhost:8000/api';
-
   const handleLogin = async (event) => {
     event.preventDefault();
 
     setMessage('');
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/login`, { username, password });
+      const response = await axios.post(`${BACKEND_API_BASE}/login`, { username, password });
 
       if (response.status === 200 && response.data.success) {
         localStorage.setItem('token', response.data.token);
@@ -126,7 +125,7 @@ const LoginPage = () => {
           </form>
           {message && <p style={{ color: message.includes('successful') ? 'green' : 'red', textAlign: 'center', marginTop: '15px' }}>{message}</p>}
           <p className="switch-link" style={{ marginTop: '15px', textAlign: 'center', fontSize: '14px' }}>
-            Don’t have an account? <Link to="/register" style={{ color: '#4CAF50', textDecoration: 'none' }}>Register</Link>
+            Don't have an account? <Link to="/register" style={{ color: '#4CAF50', textDecoration: 'none' }}>Register</Link>
           </p>
         </div>
       </main>
