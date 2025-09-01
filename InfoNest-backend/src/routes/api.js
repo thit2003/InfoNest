@@ -7,6 +7,7 @@ const protect = require('../middleware/auth');
 const ChatHistory = require('../models/ChatHistory');
 const KnowledgeBase = require('../models/KnowledgeBase');
 const axios = require('axios');
+const { RASA_BASE_URL } = require('../config/rasa');
 
 // @route   POST /api/register
 // @access  Public
@@ -100,8 +101,8 @@ router.post('/chat', protect, async (req, res) => {
 
   try {
     // --- 1. Get Intent from Rasa ---
-    const rasaParseResponse = await axios.post('http://localhost:5005/model/parse', {
-         text: message
+    const rasaParseResponse = await axios.post(`${RASA_BASE_URL}/model/parse`, {
+      text: message
     });
 
     const intentName = rasaParseResponse.data.intent.name;

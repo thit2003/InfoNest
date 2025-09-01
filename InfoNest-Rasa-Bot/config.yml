@@ -19,7 +19,7 @@ pipeline:
 
 policies:
 - name: "MemoizationPolicy"
-  max_history: 10
+  max_history: 20
 
 - name: "TEDPolicy"
   max_history: 10

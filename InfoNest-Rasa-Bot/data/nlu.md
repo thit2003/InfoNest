@@ -160,16 +160,19 @@
 
 ## intent:ask_course_registration
 - how do I register for courses?
-- what's AU SPARK?
 - where do I view my pre-registration time slot?
 - what happens if I don’t meet the course prerequisites?
 - how does AU SPARK notify me of registration issues?
+- how can I do registration for the next semester?
+- how to do registration?
+- Is registration online?
 
 ## intent:ask_campus_conflict
 - what if my classes are on different campuses on the same day?
 - how do I file a class schedule conflict?
 - how do I petition for campus conflicts?
 - what do I do if travel time between campuses isn’t enough?
+- how can I make petition for campus conflict?
 
 ## intent:ask_seat_petition
 - how can I get a seat in a full class?
@@ -194,10 +197,12 @@
 - can I transfer to another faculty?
 - what’s needed to switch degree programs?
 - where do I petition for a major change?
+- can I change my major?
+- how can I change my major?
 
 ## intent:ask_other_academic_petitions
 - how do I declare a minor?
-- I want to change my name—what's the process?
+- I want to change my name, what's the process?
 - how do I request a leave of absence?
 - can I update my address in the system?
 
@@ -212,6 +217,7 @@
 - what’s the registrar’s phone number?
 - how do I contact enrollment services?
 - registrar office at Suvarnabhumi campus?
+- registrar office at Hua Mark campus?
 
 ## intent:ask_its_help_location_contact
 - I can’t log in my au account, who do I contact?
@@ -254,11 +260,13 @@
 ## intent:ask_housing_application
 - how do I apply for dorm housing?
 - where’s the housing office?
-- when is the next dorm lottery?
 - can I get details for room availability?
+- can I get a room in dorm?
 
 ## intent:ask_international_student_support
 - how do I get visa support?
 - where’s the Office of International Affairs?
 - what’s the process for international student orientation?
 - how can I register for airport pickup?
+- where can I get international student support
+- where can I contact for international student support
