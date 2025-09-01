@@ -1,0 +1,12 @@
+services:
+  - type: static_site
+    name: infonest-frontend
+    rootDir: InfoNest-Frontend
+    buildCommand: npm install && npm run build
+    publishDir: build
+    envVars:
+      - key: REACT_APP_BACKEND_URL
+        value: https://infonest-sgyi.onrender.com
+    buildFilter:
+      paths:
+        - InfoNest-Frontend/**
