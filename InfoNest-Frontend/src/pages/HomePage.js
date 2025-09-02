@@ -87,7 +87,7 @@ const HomePage = () => {
     setChatInput('');
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/chat`,
+      const response = await axios.post(`${BACKEND_API_BASE}/chat`,
         { message: messageText },
         { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
       );
