@@ -49,8 +49,16 @@ global.geminiConfigured = geminiConfigured;
 app.use('/api', apiRoutes);
 
 // Simple test route
-app.get('/ping', (req, res) => {
-  res.send('pong');
+app.get('/', (req, res) => {
+  res.json({
+    status: 'ok',
+    service: 'InfoNest API',
+    endpoints: ['/api/login (POST)', '/api/register (POST)', '/api/me (GET)', '/api/chat (POST)', '/ping']
+  });
+});
+
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 // Start the server
