@@ -16,6 +16,8 @@ const HomePage = () => {
   const [chatInput, setChatInput] = useState('');
   const [sidebarHistory, setSidebarHistory] = useState([]);
 
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     const storedUsername = localStorage.getItem('username');
@@ -145,6 +147,10 @@ const HomePage = () => {
   navigate('/login');
 };
 
+  // NEW: toggle mobile sidebar
+  const toggleMobileSidebar = () => setIsMobileSidebarOpen(prev => !prev);
+  const closeMobileSidebar = () => setIsMobileSidebarOpen(false);
+
   useEffect(() => {
     const messagesContainer = document.querySelector('.chat-messages-container');
     if (messagesContainer) {
@@ -153,60 +159,80 @@ const HomePage = () => {
   }, [messages]);
 
   return (
-    <div className="container">
-      <aside className="sidebar">
-        <div className="logo-section">
-          <img src={infonestLogo} alt="InfoNest Logo" className="circle-logo" />
-          <h1>InfoNest</h1>
-        </div>
+    <>
+      {/* Mobile top bar (hidden on desktop via CSS) */}
+      <div className="mobile-header" onClick={toggleMobileSidebar}>
+        <img src={infonestLogo} alt="InfoNest Logo" className="circle-logo" />
+        <h1>InfoNest</h1>
+      </div>
 
-        <button className="new-chat-btn" onClick={handleNewChat}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"><path fill="currentColor" d="M7.616 8.5h6.769q.212 0 .356-.144t.144-.357t-.144-.356t-.356-.143h-6.77q-.212 0-.356.144t-.143.357t.143.356t.357.143m0 4h3.769q.212 0 .356-.144t.144-.357t-.144-.356t-.356-.143h-3.77q-.212 0-.356.144t-.143.357t.143.356t.357.143m9.884 4H15q-.213 0-.356-.144t-.144-.357t.144-.356T15 15.5h2.5V13q0-.213.144-.356t.357-.144t.356.144t.143.356v2.5H21q.213 0 .356.144t.144.357t-.144.356T21 16.5h-2.5V19q0 .213-.144.356t-.357.144t-.356-.144T17.5 19zm-11.711 0l-1.6 1.599q-.185.185-.437.089q-.252-.097-.252-.369V5.116q0-.667.475-1.141t1.14-.475h11.77q.666 0 1.14.475t.475 1.14v4.331q0 .249-.164.404q-.165.156-.407.15q-1.237.027-2.274.378q-1.038.35-1.982 1.295q-.938.944-1.292 1.982T12 15.929q.006.242-.16.407t-.394.164z"/></svg>
-          New Chat
-        </button>
+      {/* Backdrop when sidebar open on mobile */}
+      {isMobileSidebarOpen && <div className="sidebar-backdrop" onClick={closeMobileSidebar} />}
 
-        <p className="recent-title">RECENT</p>
-        <ul className="recent-list">
-          {sidebarHistory.map((entry, index) => (
-            <li key={index}>{entry}</li>
-          ))}
-        </ul>
+      <div className={`container ${isMobileSidebarOpen ? 'no-scroll' : ''}`}>
+        <aside className={`sidebar ${isMobileSidebarOpen ? 'open' : ''}`}>
+          {/* Close button visible only on mobile */}
+            <button className="close-sidebar-btn" onClick={closeMobileSidebar} aria-label="Close sidebar">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m12 13.4l2.9 2.9q.275.275.7.275t.7-.275t.275-.7t-.275-.7L13.4 12l2.9-2.9q.275-.275.275-.7t-.275-.7t-.7-.275t-.7.275L12 10.6L9.1 7.7q-.275-.275-.7-.275t-.7.275t-.275.7t.275.7l2.9 2.9l-2.9 2.9q-.275.275-.275.7t.275.7t.7.275t.7-.275zm0 8.6q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22"/>
+              </svg>
+            </button>
 
-        <button className="Log-Out-Btn" onClick={handleLogout}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 14 14">
-          <path fill="currentColor" fill-rule="evenodd" d="M0 1.5A1.5 1.5 0 0 1 1.5 0h7A1.5 1.5 0 0 1 10 1.5v1.939a2 2 0 0 0-.734 1.311H5.75a2.25 2.25 0 1 0 0 4.5h3.516A2 2 0 0 0 10 10.561V12.5A1.5 1.5 0 0 1 8.5 14h-7A1.5 1.5 0 0 1 0 12.5zm10.963 2.807A.75.75 0 0 0 10.5 5v1H5.75a1 1 0 0 0 0 2h4.75v1a.75.75 0 0 0 1.28.53l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-.817-.163" clip-rule="evenodd"/>
-          </svg>
-          Logout
-        </button>
-      </aside>
+          <div className="logo-section desktop-only">
+            <img src={infonestLogo} alt="InfoNest Logo" className="circle-logo" />
+            <h1>InfoNest</h1>
+          </div>
 
-      <main className="main-content">
-        <div className="chat-messages-container">
-          <ul>
-            {messages.map((msg, index) => (
-              <li
-                key={index}
-                className={msg.sender === 'user' ? 'user-message' : 'bot-message'}
-              >
-                {msg.text}
-              </li>
+          <button className="new-chat-btn" onClick={handleNewChat}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M12 5v14M5 12h14" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+            New Chat
+          </button>
+
+          <p className="recent-title">RECENT</p>
+          <ul className="recent-list">
+            {sidebarHistory.map((entry, index) => (
+              <li key={index}>{entry}</li>
             ))}
           </ul>
-        </div>
 
-        <div className="ask-container">
-          <input
-            type="text"
-            id="chatInput"
-            placeholder="Ask InfoNest anything"
-            value={chatInput}
-            onChange={handleChatInputChange}
-            onKeyPress={handleInputKeyPress}
-          />
-          <button id="sendChatBtn" onClick={handleSendButtonClick}>Send</button>
-        </div>
-      </main>
-    </div>
+          <button className="Log-Out-Btn" onClick={handleLogout}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 14 14">
+              <path d="M5 2h5v10H5" fill="none" stroke="currentColor" strokeWidth="1.2" />
+              <path d="M7 7H1m0 0 2-2m-2 2 2 2" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            Logout
+          </button>
+        </aside>
+
+        <main className="main-content" onClick={isMobileSidebarOpen ? closeMobileSidebar : undefined}>
+          <div className="chat-messages-container">
+            <ul>
+              {messages.map((msg, index) => (
+                <li
+                  key={index}
+                  className={msg.sender === 'user' ? 'user-message' : 'bot-message'}
+                >
+                  {msg.text}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="ask-container">
+            <input
+              type="text"
+              id="chatInput"
+              placeholder="Ask InfoNest anything"
+              value={chatInput}
+              onChange={handleChatInputChange}
+              onKeyPress={handleInputKeyPress}
+            />
+            <button id="sendChatBtn" onClick={handleSendButtonClick}>Send</button>
+          </div>
+        </main>
+      </div>
+    </>
   );
 };
 
