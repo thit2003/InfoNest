@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Google Login</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <div id="g_id_onload"
+       data-client_id="631463866191-q93448qumm8qjfbt6aovm127aq3877un.apps.googleusercontent.com"
+       data-callback="onGoogleCredential"
+       data-auto_select="false">
+  </div>
+  <div class="g_id_signin" data-type="standard"></div>
+
+  <script>
+    async function onGoogleCredential(response) {
+      try {
+        const r = await fetch('/api/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken: response.credential })
+        });
+        const data = await r.json();
+        if (!data.success) {
+          alert(data.error || 'Google login failed');
+          return;
+        }
+        // Store JWT (adjust storage method consistent with current app)
+        localStorage.setItem('token', data.token);
+        // Redirect or update UI
+        window.location.href = '/';
+      } catch (e) {
+        console.error(e);
+        alert('Network error');
+      }
+    }
+  </script>
+</body>
+</html>

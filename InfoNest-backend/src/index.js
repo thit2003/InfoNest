@@ -67,3 +67,14 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`Access your frontend at http://localhost:3000 (if React app is running)`);
 });
+
+// ... existing requires
+const googleAuthRoutes = require('./routes/googleAuth');
+
+// ... existing middleware
+app.use(express.json());
+
+// Mount Google auth route
+app.use('/api', googleAuthRoutes);
+
+// ... existing error handling / exports

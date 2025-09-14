@@ -9,6 +9,18 @@ const KnowledgeBase = require('../models/KnowledgeBase');
 const axios = require('axios');
 const { RASA_BASE_URL } = require('../config/rasa');
 
+const authRoutes = require('../routes/auth'); // adjust path
+
+const app = express();
+app.use(express.json());
+
+app.use('/api/auth', authRoutes); // Now POST /api/auth/google works
+
+// ...other middleware / error handlers
+module.exports = app;
+
+const { OAuth2Client } = require('google-auth-library');
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 // @route   POST /api/register
 // @access  Public
 router.post('/register', async (req, res) => {
@@ -64,6 +76,66 @@ router.post('/login', async (req, res) => {
   } catch (err) {
     console.error('Login error caught in route:', err);
     res.status(500).json({ error: 'Server error during login.' });
+  }
+});
+
+// GOOGLE AUTH ADD
+// @route POST /api/auth/google
+router.post('/auth/google', async (req, res) => {
+  const { idToken } = req.body;
+  if (!idToken) return res.status(400).json({ success: false, error: 'Missing idToken' });
+
+  try {
+    const ticket = await googleClient.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID
+    });
+    const payload = ticket.getPayload(); // sub, email, name, picture, email_verified
+    const { sub: googleId, email, picture, email_verified } = payload;
+
+    if (!email) return res.status(400).json({ success: false, error: 'No email in Google token' });
+    if (email_verified === false)
+      return res.status(400).json({ success: false, error: 'Email not verified by Google' });
+
+    const normalizedEmail = email.toLowerCase();
+    let user = await User.findOne({ googleId });
+    if (!user) {
+      // Try existing local user by username (assuming username = email for locals)
+      user = await User.findOne({ username: normalizedEmail });
+      if (user) {
+        // Link existing account
+        if (!user.googleId) {
+          user.googleId = googleId;
+          user.provider = 'google';
+          if (!user.avatarUrl && picture) user.avatarUrl = picture;
+          await user.save();
+        }
+      } else {
+        // Create new google user
+        user = await User.create({
+          username: normalizedEmail,
+          provider: 'google',
+          googleId,
+          avatarUrl: picture
+        });
+        // If you have chat initialization for new users, call it here.
+      }
+    }
+
+    const token = user.getSignedJwtToken();
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        provider: user.provider,
+        avatarUrl: user.avatarUrl
+      }
+    });
+  } catch (err) {
+    console.error('Google auth error:', err);
+    res.status(401).json({ success: false, error: 'Invalid Google token' });
   }
 });
 
