@@ -132,6 +132,18 @@ const RegisterPage = () => {
           </p>
         </div>
       </main>
+
+      <footer
+        style={{
+          textAlign: 'center',
+          padding: '10px 15px',
+          fontSize: '12px',
+          color: '#2f4f2f',
+          marginTop: 'auto'
+        }}
+      >
+        InfoNest by Thit Lwin Win Thant, VMES © 2025
+      </footer>
     </div>
   );
 };
