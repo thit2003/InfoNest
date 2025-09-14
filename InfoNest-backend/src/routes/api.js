@@ -191,7 +191,7 @@ router.get('/history', protect, async (req, res) => {
   try {
     const history = await ChatHistory.find({ user: userId })
                                     .sort({ timestamp: 1 })
-                                    .limit(50);
+                                    .limit(100);
 
     res.status(200).json({ success: true, count: history.length, data: history });
 
