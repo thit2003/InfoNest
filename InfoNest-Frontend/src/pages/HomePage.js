@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios"; // For making API calls
 import "../styles/Home.css";
 import { BACKEND_API_BASE } from "../config";
+import TypingIndicator from '../components/TypingIndicator';
 
 const infonestLogo = "/logo.png";
 const userAvatar = "/avatar.png";
@@ -15,6 +16,8 @@ const HomePage = () => {
   const [messages, setMessages] = useState([]);
   const [chatInput, setChatInput] = useState("");
   const [sidebarHistory, setSidebarHistory] = useState([]);
+
+  const [isBotThinking, setIsBotThinking] = useState(false);
 
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
@@ -80,11 +83,15 @@ const HomePage = () => {
   const sendMessage = async (messageText) => {
     const token = localStorage.getItem("token");
     if (!token || messageText.trim() === "") return;
+    if (isBotThinking) return;
 
     const userMessage = { sender: "user", text: messageText };
     setMessages((prevMessages) => [...prevMessages, userMessage]);
 
     setChatInput("");
+
+    // Show typing indicator
+    setIsBotThinking(true);
 
     try {
       const response = await axios.post(
@@ -137,6 +144,8 @@ const HomePage = () => {
         ...prevMessages,
         { sender: "bot", text: errorMessage },
       ]);
+    } finally {
+      setIsBotThinking(false);
     }
   };
 
@@ -295,6 +304,8 @@ const HomePage = () => {
                 </li>
               ))}
             </ul>
+
+            <TypingIndicator visible={isBotThinking} />
           </div>
 
           <div className="ask-container">
@@ -305,9 +316,14 @@ const HomePage = () => {
               value={chatInput}
               onChange={handleChatInputChange}
               onKeyPress={handleInputKeyPress}
+              disabled={isBotThinking}
             />
-            <button id="sendChatBtn" onClick={handleSendButtonClick}>
-              Send
+            <button
+              id="sendChatBtn"
+              onClick={handleSendButtonClick}
+              disabled={isBotThinking || chatInput.trim() === ''}
+            >
+              {isBotThinking ? '...' : 'Send'}
             </button>
           </div>
         </main>
