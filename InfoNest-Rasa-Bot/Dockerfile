@@ -1,16 +1,10 @@
-FROM python:3.7-slim
-
-RUN apt-get update && apt-get install -y build-essential git
-
-RUN pip install --upgrade pip setuptools
-RUN pip install protobuf==3.20.3
-RUN pip install rasa==1.10.2
-
+FROM rasa/rasa:3.6.20-full
 WORKDIR /app
-COPY . /app
-
-# --- ADD THIS LINE TO TRAIN THE MODEL DURING BUILD ---
+USER root
+COPY --chown=1001:1001 config.yml domain.yml /app/
+COPY --chown=1001:1001 data /app/data
+USER 1001
 RUN rasa train
-
-# New CMD command to run the Rasa server with API enabled
-CMD ["rasa", "run", "--enable-api", "--cors", "*", "--debug", "-p", "5005"]
+COPY --chown=1001:1001 endpoints.yml /app/endpoints.yml
+EXPOSE 5005
+CMD ["run", "--enable-api", "--cors", "*", "--debug", "--port", "5005"]

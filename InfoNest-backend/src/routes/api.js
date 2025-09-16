@@ -9,18 +9,18 @@ const KnowledgeBase = require('../models/KnowledgeBase');
 const axios = require('axios');
 const { RASA_BASE_URL } = require('../config/rasa');
 
-const authRoutes = require('../routes/auth'); // adjust path
+const authRoutes = require('../routes/auth');
 
 const app = express();
 app.use(express.json());
 
-app.use('/api/auth', authRoutes); // Now POST /api/auth/google works
+app.use('/api/auth', authRoutes);
 
-// ...other middleware / error handlers
 module.exports = app;
 
 const { OAuth2Client } = require('google-auth-library');
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
 // @route   POST /api/register
 // @access  Public
 router.post('/register', async (req, res) => {
@@ -90,7 +90,7 @@ router.post('/auth/google', async (req, res) => {
       idToken,
       audience: process.env.GOOGLE_CLIENT_ID
     });
-    const payload = ticket.getPayload(); // sub, email, name, picture, email_verified
+    const payload = ticket.getPayload();
     const { sub: googleId, email, picture, email_verified } = payload;
 
     if (!email) return res.status(400).json({ success: false, error: 'No email in Google token' });
@@ -100,10 +100,8 @@ router.post('/auth/google', async (req, res) => {
     const normalizedEmail = email.toLowerCase();
     let user = await User.findOne({ googleId });
     if (!user) {
-      // Try existing local user by username (assuming username = email for locals)
       user = await User.findOne({ username: normalizedEmail });
       if (user) {
-        // Link existing account
         if (!user.googleId) {
           user.googleId = googleId;
           user.provider = 'google';
@@ -111,14 +109,12 @@ router.post('/auth/google', async (req, res) => {
           await user.save();
         }
       } else {
-        // Create new google user
         user = await User.create({
           username: normalizedEmail,
-          provider: 'google',
-          googleId,
-          avatarUrl: picture
+            provider: 'google',
+            googleId,
+            avatarUrl: picture
         });
-        // If you have chat initialization for new users, call it here.
       }
     }
 
@@ -171,6 +167,9 @@ router.post('/chat', protect, async (req, res) => {
 
   let botResponse = "I'm sorry, I couldn't find an answer for that right now. Please try rephrasing or ask a different question.";
 
+  // New: configurable intent confidence threshold (defaults to original 0.6)
+  const MIN_CONFIDENCE = parseFloat(process.env.INTENT_CONFIDENCE_MIN || '0.6');
+
   try {
     // --- 1. Get Intent from Rasa ---
     const rasaParseResponse = await axios.post(`${RASA_BASE_URL}/model/parse`, {
@@ -184,38 +183,51 @@ router.post('/chat', protect, async (req, res) => {
 
     // --- 2. Decide Where to Get the Answer ---
     let kbEntry = null;
-    if (intentName && confidence > 0.4) {
-        kbEntry = await KnowledgeBase.findOne({ intent: intentName });
+    if (intentName && confidence > MIN_CONFIDENCE) {
+      kbEntry = await KnowledgeBase.findOne({ intent: intentName });
 
-        if (kbEntry) {
-            console.log(`Found KB entry for intent '${intentName}'.`);
-            botResponse = kbEntry.answer;
+      if (kbEntry) {
+        console.log(`Found KB entry for intent '${intentName}'.`);
+        botResponse = kbEntry.answer;
+      } else {
+        console.log(`No KB entry found for '${intentName}'. Attempting to use Gemini if configured.`);
+        if (global.geminiConfigured && global.geminiModel) {
+          const prompt = `As AI chatbot for Assumption University of Thailand, User query: "${message}". Provide concise, summary answer. Avoid markdown characters in responses.`;
+          try {
+            const geminiResponse = await global.geminiModel.generateContent(prompt);
+            const responseText = geminiResponse.response.text();
+            botResponse = responseText;
+            console.log(`Gemini API Response: ${botResponse}`);
+          } catch (geminiError) {
+            console.error("Error calling Gemini API:", geminiError);
+            botResponse = "Sorry, I encountered an error trying to get AI-generated information. Please try again later.";
+          }
         } else {
-            // --- 3. DELEGATE TO GEMINI API IF INTENT NOT IN KB ---
-            console.log(`No KB entry found for '${intentName}'. Attempting to use Gemini if configured.`);
-
-            // Access the globally configured model
-            if (global.geminiConfigured && global.geminiModel) {
-                const prompt = `As an AI assistant for Assumption University of Thailand, answer the following user query: "${message}". Adjust tokens based on user needs. Don't use # or such characters in responses.`;
-
-                try {
-                    // const maxTokensFromEnv = parseInt(process.env.GEMINI_MAX_OUTPUT_TOKENS || '80', 10);
-                    // console.log(`Using maxOutputTokens: ${maxTokensFromEnv}`);
-                    const geminiResponse = await global.geminiModel.generateContent(prompt);
-                    const responseText = geminiResponse.response.text();
-                    botResponse = responseText;
-                    console.log(`Gemini API Response: ${botResponse}`);
-                } catch (geminiError) {
-                    console.error("Error calling Gemini API:", geminiError);
-                    botResponse = "Sorry, I encountered an error trying to get AI-generated information. Please try again later.";
-                }
-            } else {
-                botResponse = `I understood your intent as '${intentName}', but I don't have a specific answer in my knowledge base, and the AI assistant is not configured.`;
-            }
+          botResponse = `I understood your intent as '${intentName}', but I don't have a specific answer in my knowledge base, and the AI assistant is not configured.`;
         }
+      }
     } else {
-        console.log(`Rasa intent confidence too low for '${intentName}'. Falling back.`);
+      // --- LOW CONFIDENCE PATH -> use Gemini instead of static fallback ---
+      console.log(`Rasa intent confidence too low for '${intentName}' (confidence=${confidence} < ${MIN_CONFIDENCE}). Trying Gemini fallback.`);
+      if (global.geminiConfigured && global.geminiModel) {
+        const prompt = `User asked (low intent confidence: ${confidence}): "${message}". Provide the best helpful answer as an AI assistant for Assumption University of Thailand. Avoid Mark Down characters.`;
+        try {
+          const geminiResponse = await global.geminiModel.generateContent(prompt);
+          const responseText = geminiResponse.response.text();
+            if (responseText && responseText.trim().length > 0) {
+              botResponse = responseText.trim();
+              console.log("Gemini answer used (reason=low_confidence).");
+            } else {
+              console.warn("Gemini returned empty text on low confidence; using generic fallback.");
+              botResponse = "I'm sorry, I didn't quite understand that. Could you please rephrase your question?";
+            }
+        } catch (geminiError) {
+          console.error("Error calling Gemini API on low confidence:", geminiError);
+          botResponse = "I'm sorry, I didn't quite understand that. Could you please rephrase your question?";
+        }
+      } else {
         botResponse = "I'm sorry, I didn't quite understand that. Could you please rephrase your question?";
+      }
     }
 
     // --- Save to History ---
@@ -235,19 +247,19 @@ router.post('/chat', protect, async (req, res) => {
   } catch (err) {
     console.error('Error in /api/chat endpoint:', err.message);
     if (err.response) {
-        console.error('Rasa Server Error Response:', err.response.status, err.response.data);
-        res.status(err.response.status || 500).json({ error: `Failed to communicate with Rasa. Status: ${err.response.status}` });
+      console.error('Rasa Server Error Response:', err.response.status, err.response.data);
+      res.status(err.response.status || 500).json({ error: `Failed to communicate with Rasa. Status: ${err.response.status}` });
     } else if (err.code === 'ECONNREFUSED') {
-        res.status(500).json({ error: 'Chatbot engine (Rasa) is not running or accessible. Please start it.' });
+      res.status(500).json({ error: 'Chatbot engine (Rasa) is not running or accessible. Please start it.' });
     } else {
-        console.error('General Server Error during chat processing:', err.stack);
-        res.status(500).json({ error: 'Server error while processing chat.' });
+      console.error('General Server Error during chat processing:', err.stack);
+      res.status(500).json({ error: 'Server error while processing chat.' });
     }
   }
 });
 
 // @route   GET /api/news
-// @access  Public (can be made private if needed)
+// @access  Public
 router.get('/news', (req, res) => {
   res.json([
     { title: 'Dummy News Article 1', content: 'This is the content of dummy news article 1.' },
@@ -262,8 +274,8 @@ router.get('/history', protect, async (req, res) => {
 
   try {
     const history = await ChatHistory.find({ user: userId })
-                                    .sort({ timestamp: 1 })
-                                    .limit(100);
+      .sort({ timestamp: 1 })
+      .limit(100);
 
     res.status(200).json({ success: true, count: history.length, data: history });
 

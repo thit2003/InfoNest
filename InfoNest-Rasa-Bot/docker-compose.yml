@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  rasa:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5005:5005"
+    depends_on:
+      - actions
+  actions:
+    build:
+      context: .
+      dockerfile: Dockerfile.actions
+    ports:
+      - "5055:5055"

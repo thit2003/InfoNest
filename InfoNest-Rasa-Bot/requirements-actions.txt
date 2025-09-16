@@ -1,0 +1,2 @@
+rapidfuzz==3.6.1
+# fastcoref or other libs can go here (pin versions)

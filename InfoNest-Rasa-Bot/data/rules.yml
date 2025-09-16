@@ -1,8 +1,25 @@
 # InfoNest-Rasa-Bot/data/rules.yml (Add this rule)
+    version: "3.1"
     rules:
       # ... existing rules ...
 
-      - rule: Handle general university info with Gemini
+      - rule: Fallback
         steps:
-        - intent: ask_general_university_info # Intent that triggers Gemini
-        - action: action_ask_gemini_for_university_info # Your custom action name
+        - intent: nlu_fallback
+        - action: utter_ask_general_university_info
+
+      - rule: Set entity when mentioned
+        steps:
+        - intent: ask_definition
+        - action: action_set_current_entity
+        - action: action_define_entity
+
+      - rule: Clarify entity after disambiguation intent
+        steps:
+        - intent: clarify_entity
+        - action: action_disambiguate_entity
+
+      - rule: Reset context
+        steps:
+        - intent: reset_context
+        - action: action_reset_context

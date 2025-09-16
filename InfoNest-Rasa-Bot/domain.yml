@@ -1,5 +1,5 @@
 # InfoNest-Rasa-Bot/domain.yml
-version: "1.0" # Make sure this is "1.0" for Rasa 1.10.2
+version: "3.1" # Make sure this is "1.0" for Rasa 1.10.2
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
@@ -35,6 +35,38 @@ intents:
   - ask_sports_facilities
   - ask_housing_application
   - ask_international_student_support
+  - ask_definition
+  - ask_location
+  - ask_founding_year
+  - ask_ranking
+  - ask_programs
+  - clarify_entity
+  - reset_context
+
+entities:
+  - Assumption University
+
+slots:
+  current_entity:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: custom
+  current_entity_id:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: custom
+  recent_entities:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: custom
+  pending_disambiguation:
+    type: list
+    influence_conversation: true
+    mappings:
+      - type: custom
 
 responses:
   utter_greet:
@@ -123,6 +155,21 @@ responses:
   utter_ask_international_student_support:
   - text: "International students can contact Room L101 (Hua Mak) or CL118 (Suvarnabhumi). Visa and orientation updates are posted at http://www.oia.au.edu/."
 
+  utter_request_entity:
+    - text: "Which institution are you asking about?"
+
+  utter_disambiguate_entity:
+    - text: "I found multiple matches: {options}. Which one did you mean?"
+
+  utter_unknown_entity:
+    - text: "I don't have data for {entity}."
+
+  utter_context_cleared:
+    - text: "Context cleared. You can start with a new institution."
+
+  utter_ask_rephrase:
+    - text: "Could you rephrase or mention the institution name?"
+
 actions:
   - utter_greet
   - utter_goodbye
@@ -157,3 +204,11 @@ actions:
   - utter_ask_sports_facilities
   - utter_ask_housing_application
   - utter_ask_international_student_support
+  - action_set_current_entity
+  - action_define_entity
+  - action_answer_location
+  - action_answer_founding_year
+  - action_answer_ranking
+  - action_answer_programs
+  - action_disambiguate_entity
+  - action_reset_context

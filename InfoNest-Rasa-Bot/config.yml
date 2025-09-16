@@ -1,31 +1,31 @@
-# InfoNest-Rasa-Bot/config.yml
-
+assistant_id: "infonest-rasa-bot-001"
 language: en
 
 pipeline:
-- name: "WhitespaceTokenizer"
-- name: "RegexFeaturizer"
-- name: "LexicalSyntacticFeaturizer"
-- name: "CountVectorsFeaturizer"
-  analyzer: "char_wb"
-  min_ngram: 1
-  max_ngram: 4
-- name: "CountVectorsFeaturizer"
-  analyzer: "word"
-- name: "DIETClassifier"
-  epochs: 200
-  constrain_similarities: true
-- name: "EntitySynonymMapper"
+  - name: WhitespaceTokenizer
+  - name: RegexFeaturizer
+  - name: LexicalSyntacticFeaturizer
+  - name: CountVectorsFeaturizer
+    analyzer: char_wb
+    min_ngram: 1
+    max_ngram: 4
+  - name: CountVectorsFeaturizer
+    analyzer: word
+  - name: DIETClassifier
+    epochs: 200
+    constrain_similarities: true
+  - name: EntitySynonymMapper
+  - name: FallbackClassifier        # Replaces old FallbackPolicy thresholds
+    threshold: 0.4                  # Similar to old nlu_threshold
+    ambiguity_threshold: 0.1
 
 policies:
-- name: "MemoizationPolicy"
-  max_history: 20
-
-- name: "TEDPolicy"
-  max_history: 10
-  epochs: 200
-
-- name: "FallbackPolicy"
-  fallback_action_name: "utter_ask_general_university_info"
-  core_threshold: 0.3
-  nlu_threshold: 0.4
+  - name: MemoizationPolicy
+    max_history: 10
+  - name: TEDPolicy
+    max_history: 5
+    epochs: 150
+    constrain_similarities: true
+  - name: RulePolicy
+    core_fallback_action_name: "utter_ask_general_university_info"
+    enable_fallback_prediction: true

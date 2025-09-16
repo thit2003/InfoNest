@@ -1,0 +1,13 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements for actions (rapidfuzz etc.)
+COPY requirements-actions.txt /app/requirements-actions.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir rasa-sdk==3.6.2 -r requirements-actions.txt
+
+COPY actions /app/actions
+EXPOSE 5055
+CMD ["rasa", "run", "actions", "--port", "5055", "--debug"]

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; // For making API calls
+import axios from "axios";
 import "../styles/Home.css";
 import { BACKEND_API_BASE } from "../config";
 import TypingIndicator from '../components/TypingIndicator';
@@ -11,17 +11,15 @@ const infonestLogo = "/logo.png";
 const userAvatar = "/avatar.png";
 
 const HomePage = () => {
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
   const [username, setUsername] = useState("User");
   const [messages, setMessages] = useState([]);
   const [chatInput, setChatInput] = useState("");
   const [sidebarHistory, setSidebarHistory] = useState([]);
-
   const [isBotThinking, setIsBotThinking] = useState(false);
-
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-
   const [currentUser, setCurrentUser] = useState(null);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     const username = localStorage.getItem("username");
@@ -31,7 +29,7 @@ const HomePage = () => {
     }
     if (username !== currentUser) {
       setCurrentUser(username);
-      setMessages([]); // optional clear
+      setMessages([]);
       setSidebarHistory([]);
       fetchChatHistory(token);
     }
@@ -50,18 +48,20 @@ const HomePage = () => {
 
         historyData.forEach((entry) => {
           formattedMessages.push({ sender: "user", text: entry.userMessage });
-          formattedMessages.push({ sender: "bot", text: entry.botResponse });
+            formattedMessages.push({
+              sender: "bot",
+              text: (entry.botResponse && entry.botResponse.trim().length > 0)
+                ? entry.botResponse
+                : "[No stored response]"
+            });
           newSidebarHistory.push(entry.userMessage.substring(0, 25) + "...");
         });
 
         setMessages(formattedMessages);
         setSidebarHistory(newSidebarHistory);
 
-        // If no history, start with a greeting from the bot
         if (formattedMessages.length === 0) {
-          setMessages([
-            { sender: "bot", text: "Hello! How can I help you today?" },
-          ]);
+          setMessages([{ sender: "bot", text: "Hello! How can I help you today?" }]);
         }
       } else {
         console.error("Failed to fetch chat history:", response.data.error);
@@ -80,6 +80,23 @@ const HomePage = () => {
     }
   };
 
+  const extractBotResponse = (raw) => {
+    // Try multiple shapes to be robust against backend changes
+    let candidate =
+      raw?.botResponse ??
+      raw?.response ??
+      raw?.data?.botResponse ??
+      raw?.data?.response ??
+      raw?.data?.data?.botResponse ??
+      raw?.data?.data?.response;
+
+    if (typeof candidate === "string") {
+      const trimmed = candidate.trim();
+      if (trimmed.length > 0) return trimmed;
+    }
+    return null;
+  };
+
   const sendMessage = async (messageText) => {
     const token = localStorage.getItem("token");
     if (!token || messageText.trim() === "") return;
@@ -87,10 +104,7 @@ const HomePage = () => {
 
     const userMessage = { sender: "user", text: messageText };
     setMessages((prevMessages) => [...prevMessages, userMessage]);
-
     setChatInput("");
-
-    // Show typing indicator
     setIsBotThinking(true);
 
     try {
@@ -105,8 +119,19 @@ const HomePage = () => {
         }
       );
 
+      console.log("DEBUG /chat raw response:", response.data);
+
       if (response.status === 200) {
-        const botResponse = response.data.botResponse;
+        // Original backend shape: { userMessage, botResponse, historyId }
+        // New/refactored shape possibility: { success:true, data:{ response: "...", ... } }
+        let botResponse = extractBotResponse(response.data);
+
+        // Defensive fallback: if still null/empty
+        if (!botResponse) {
+          console.warn("Bot response was empty or undefined. Inserting placeholder.");
+          botResponse = "[No answer returned]";
+        }
+
         setMessages((prevMessages) => [
           ...prevMessages,
           { sender: "bot", text: botResponse },
@@ -133,11 +158,7 @@ const HomePage = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("username");
         navigate("/login");
-      } else if (
-        error.response &&
-        error.response.data &&
-        error.response.data.error
-      ) {
+      } else if (error.response?.data?.error) {
         errorMessage = `Error: ${error.response.data.error}`;
       }
       setMessages((prevMessages) => [
@@ -150,28 +171,15 @@ const HomePage = () => {
   };
 
   const handleNewChat = () => {
-    setMessages([]); // Clear all current messages
     setMessages([{ sender: "bot", text: "Hello! How can I help you today?" }]);
   };
 
-  const handleChatInputChange = (e) => {
-    setChatInput(e.target.value);
-  };
-
-  const handleSendButtonClick = () => {
-    sendMessage(chatInput);
-  };
-
+  const handleChatInputChange = (e) => setChatInput(e.target.value);
+  const handleSendButtonClick = () => sendMessage(chatInput);
   const handleInputKeyPress = (e) => {
-    if (e.key === "Enter") {
-      sendMessage(chatInput);
-    }
+    if (e.key === "Enter") sendMessage(chatInput);
   };
-
-  const handleQuickQuestionClick = (e) => {
-    sendMessage(e.target.textContent);
-  };
-
+  const handleQuickQuestionClick = (e) => sendMessage(e.target.textContent);
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
@@ -180,14 +188,11 @@ const HomePage = () => {
     navigate("/login");
   };
 
-  // NEW: toggle mobile sidebar
   const toggleMobileSidebar = () => setIsMobileSidebarOpen((prev) => !prev);
   const closeMobileSidebar = () => setIsMobileSidebarOpen(false);
 
   useEffect(() => {
-    const messagesContainer = document.querySelector(
-      ".chat-messages-container"
-    );
+    const messagesContainer = document.querySelector(".chat-messages-container");
     if (messagesContainer) {
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
@@ -195,20 +200,17 @@ const HomePage = () => {
 
   return (
     <>
-      {/* Mobile top bar (hidden on desktop via CSS) */}
       <div className="mobile-header" onClick={toggleMobileSidebar}>
         <img src={infonestLogo} alt="InfoNest Logo" className="circle-logo" />
         <h1>InfoNest</h1>
       </div>
 
-      {/* Backdrop when sidebar open on mobile */}
       {isMobileSidebarOpen && (
         <div className="sidebar-backdrop" onClick={closeMobileSidebar} />
       )}
 
       <div className={`container ${isMobileSidebarOpen ? "no-scroll" : ""}`}>
         <aside className={`sidebar ${isMobileSidebarOpen ? "open" : ""}`}>
-          {/* Close button visible only on mobile */}
           <button
             className="close-sidebar-btn"
             onClick={closeMobileSidebar}
@@ -236,23 +238,19 @@ const HomePage = () => {
             <h1>InfoNest</h1>
           </div>
 
-          <button className="new-chat-btn" onClick={handleNewChat}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-            >
-              <path
-                d="M12 5v14M5 12h14"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-            New Chat
-          </button>
+            <button className="new-chat-btn" onClick={handleNewChat}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path d="M12 5v14M5 12h14" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+              New Chat
+            </button>
 
           <p className="recent-title">RECENT</p>
           <ul className="recent-list">
@@ -296,15 +294,12 @@ const HomePage = () => {
               {messages.map((msg, index) => (
                 <li
                   key={index}
-                  className={
-                    msg.sender === "user" ? "user-message" : "bot-message"
-                  }
+                  className={msg.sender === "user" ? "user-message" : "bot-message"}
                 >
                   {msg.text}
                 </li>
               ))}
             </ul>
-
             <TypingIndicator visible={isBotThinking} />
           </div>
 
