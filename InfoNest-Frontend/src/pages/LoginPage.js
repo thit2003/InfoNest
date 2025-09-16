@@ -420,7 +420,7 @@ const LoginPage = () => {
           marginTop: "auto",
         }}
       >
-        InfoNest by Thit Lwin Win Thant, VMES © 2025
+        InfoNest by John & Knox, VMES © 2025
       </footer>
     </div>
   );
