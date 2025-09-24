@@ -32,12 +32,12 @@
   padding: 8px;
 }
 .fbk-comment textarea {
-  width: 100%;
+  width: 96%;
   min-height: 70px;
   resize: vertical;
   border: 1px solid #e3e3e3;
   border-radius: 8px;
-  padding: 6px 8px;
+  padding: 6px 5px;
   font-size: 14px;
 }
 .fbk-actions {
