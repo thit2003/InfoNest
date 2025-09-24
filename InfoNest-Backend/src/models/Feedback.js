@@ -40,4 +40,7 @@ const FeedbackSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Optional: ensure only one feedback per user per history item
+FeedbackSchema.index({ user: 1, history: 1 }, { unique: true, sparse: true });
+
 module.exports = mongoose.model('Feedback', FeedbackSchema);
