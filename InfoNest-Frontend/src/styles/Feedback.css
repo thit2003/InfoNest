@@ -64,3 +64,44 @@
   font-size: 13px;
   color: #2f6b2f;
 }
+
+.feedback-page {
+  min-height: 100vh;
+  background-color: #fff; /* match your page color here */
+
+}
+
+.feedback-close-btn {
+  position: fixed;
+  top: 25px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid #cce8cc;
+  color: #2f4f2f;
+  font-size: 22px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  z-index: 2200;
+  transition: background-color 0.15s ease, transform 0.05s ease;
+
+  /* Remove underline */
+  text-decoration: none !important;
+}
+
+/* Also ensure no underline on hover/focus/active states */
+.feedback-close-btn:hover,
+.feedback-close-btn:focus,
+.feedback-close-btn:active,
+.feedback-close-btn:visited {
+  text-decoration: none !important;
+}
+
+.feedback-close-btn:hover { background-color: #e6ffcc; }
+.feedback-close-btn:active { transform: translateY(1px); }

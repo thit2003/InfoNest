@@ -396,3 +396,30 @@ body {
     width: auto;
   }
 }
+
+/* Floating Help icon (top-right) */
+.help-fab {
+  position: fixed;
+  top: 7px;
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid #cce8cc;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #2f4f2f;
+  text-decoration: none;
+  cursor: pointer;
+  z-index: 2000; /* keep above sidebar/backdrop */
+  transition: background-color 0.15s ease, transform 0.05s ease;
+}
+.help-fab:hover {
+  background: #e6ffcc;
+}
+.help-fab:active {
+  transform: translateY(1px);
+}
+.help-fab svg { stroke: #2f4f2f; }

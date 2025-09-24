@@ -332,4 +332,23 @@ router.get('/feedback/mine', protect, async (req, res) => {
   }
 });
 
+// @route   GET /api/feedback/summary
+// @desc    Rating counts for the authenticated user
+// @access  Private
+router.get('/feedback/summary', protect, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const pipeline = [
+      { $match: { user: new (require('mongoose')).Types.ObjectId(userId) } },
+      { $group: { _id: '$rating', count: { $sum: 1 } } },
+    ];
+    const agg = await require('mongoose').model('Feedback').aggregate(pipeline);
+    const summary = agg.reduce((acc, r) => ({ ...acc, [r._id || 'neutral']: r.count }), {});
+    res.status(200).json({ success: true, data: summary });
+  } catch (err) {
+    console.error('Error summarizing feedback:', err);
+    res.status(500).json({ error: 'Server error while summarizing feedback.' });
+  }
+});
+
 module.exports = router;

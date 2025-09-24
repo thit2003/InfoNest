@@ -5,7 +5,7 @@ const morgan = require('morgan'); // For general request logging
 const cors = require('cors');     // For Cross-Origin Resource Sharing
 const mongoose = require('mongoose'); // For MongoDB interaction
 require('dotenv').config();       // For loading environment variables from .env
-
+const rateLimit = require('express-rate-limit');
 const genai = require('@google/generative-ai');
 
 let geminiModel = null;
@@ -44,6 +44,14 @@ mongoose.connect(process.env.MONGO_URI, {
 
 global.geminiModel = geminiModel;
 global.geminiConfigured = geminiConfigured;
+
+const feedbackLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 12,             // allow up to 12 feedback posts/min per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api/feedback', feedbackLimiter);
 
 // Use the API routes from api.js
 app.use('/api', apiRoutes);

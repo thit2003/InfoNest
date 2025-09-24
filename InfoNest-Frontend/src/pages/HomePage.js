@@ -8,6 +8,8 @@ import "../styles/Suggestions.css";
 import { BACKEND_API_BASE } from "../config";
 import TypingIndicator from "../components/TypingIndicator";
 import FeedbackBar from "../components/FeedbackBar";
+import { Link } from 'react-router-dom';
+import HelpFab from '../components/HelpFab';
 
 const infonestLogo = "/logo.png";
 
@@ -200,6 +202,7 @@ const HomePage = () => {
 
   return (
     <>
+    <HelpFab hidden={isMobileSidebarOpen} />
       {/* Mobile header: hamburger on the left, logo + name centered */}
       <div className="mobile-header">
         {!isMobileSidebarOpen && (
@@ -215,6 +218,21 @@ const HomePage = () => {
         )}
         <img src={infonestLogo} alt="InfoNest Logo" className="circle-logo" />
         <h1>InfoNest</h1>
+        {!isMobileSidebarOpen && (
+  <Link
+    to="/feedback"
+    className="help-fab"
+    aria-label="Feedback & Help"
+    title="Feedback & Help"
+  >
+    {/* Question mark in a circle icon */}
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <circle cx="12" cy="12" r="10" strokeWidth="1.8" />
+      <path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.8-2.5 2-2.5 3.5" strokeWidth="1.8" strokeLinecap="round" />
+      <circle cx="12" cy="17" r="1" fill="currentColor" />
+    </svg>
+  </Link>
+)}
       </div>
 
       {/* Backdrop when sidebar open on mobile */}
