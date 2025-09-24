@@ -21,10 +21,8 @@
 }
 .fbk-chip:hover { background-color: #e6ffcc; }
 .fbk-chip:disabled { opacity: .6; cursor: not-allowed; }
-.fbk-chip.up {}
 .fbk-chip.down { border-color: #ffc9c9; background: #fff7f7; }
 .fbk-chip.down:hover { background: #ffecec; }
-.fbk-chip.comment {}
 
 .fbk-comment {
   width: 100%;
