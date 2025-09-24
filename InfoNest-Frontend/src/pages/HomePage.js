@@ -152,7 +152,7 @@ const HomePage = () => {
     setMessages([{ sender: 'bot', text: 'Hello! How can I help you today?' }]);
     // Do not toggle suggestions here; they should only appear when there is no history.
     // If you want suggestions on every new chat, uncomment:
-    // setShowSuggestions(true);
+    setShowSuggestions(true);
   };
 
   const handleChatInputChange = (e) => setChatInput(e.target.value);
