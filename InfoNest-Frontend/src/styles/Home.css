@@ -1,10 +1,12 @@
-/* src/styles/Home.css */
+/* Home.css
+*/
 
+/* Base */
 body {
   margin: 0;
   font-family: 'Arial', sans-serif;
   background-color: #e6f4ea;
-  color: #333; 
+  color: #333;
 }
 
 .container {
@@ -15,33 +17,41 @@ body {
 
 .sidebar {
   width: 260px;
-  background-color: #c7f0c4; 
+  background-color: #c7f0c4;
   padding: 20px;
   display: flex;
   flex-direction: column;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); 
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
 }
 
+/* Desktop sidebar logo section */
 .logo-section {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 30px;
 }
-
 .logo-section img.circle-logo {
   width: 40px;
   height: 40px;
   border-radius: 50%;
 }
-
 .logo-section h1 {
   font-size: 24px;
   font-weight: bold;
   color: #1a202c;
 }
 
+/* Global logo helper */
+.circle-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Buttons */
 .new-chat-btn {
   display: flex;
   align-items: center;
@@ -49,7 +59,7 @@ body {
   width: 100%;
   padding: 10px 15px;
   border: none;
-  border-radius: 12px; 
+  border-radius: 12px;
   background-color: #f1f1f1;
   color: #333;
   font-size: 16px;
@@ -58,12 +68,9 @@ body {
   margin-bottom: 10px;
   margin-top: -5px;
 }
+.new-chat-btn:hover { background-color: #e6ffcc; }
 
-.new-chat-btn:hover {
-  background-color: #e6ffcc;
-}
-
-.Log-Out-Btn{
+.Log-Out-Btn {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -78,17 +85,12 @@ body {
   transition: background-color 0.2s ease;
   margin-bottom: 5px;
   justify-content: center;
+  margin-top: auto;
 }
+.Log-Out-Btn:hover { background-color: #e6ffcc; }
+.new-chat-btn svg { stroke: #333; }
 
-.Log-Out-Btn:hover {
-  background-color: #e6ffcc;
-}
-
-.new-chat-btn svg {
-  stroke: #333;
-}
-
-
+/* Recent list */
 .recent-title {
   font-weight: bold;
   margin-bottom: 5px;
@@ -97,7 +99,6 @@ body {
   color: #555;
   letter-spacing: 0.5px;
 }
-
 .recent-list {
   list-style: none;
   padding-left: 0;
@@ -106,7 +107,6 @@ body {
   overflow-y: auto;
   flex-grow: 1;
 }
-
 .recent-list li {
   padding: 8px 10px;
   border-radius: 10px;
@@ -117,10 +117,7 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
-.recent-list li:hover {
-  background-color: #e0e0e0;
-}
+.recent-list li:hover { background-color: #e0e0e0; }
 
 /* Main content area */
 .main-content {
@@ -128,89 +125,81 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #d9f4db; /* Original main content green */
-  padding: 40px 40px 10px 40px; /* Increased bottom padding to 80px */
+  background-color: #d9f4db;
+  padding: 40px 40px 10px 40px;
   overflow-y: auto;
 }
 
-/* Chat messages display area */
+/* Chat messages area */
 .chat-messages-container {
-  max-height: calc(700vh - 850px); /* Dynamic height */
+  max-height: calc(700vh - 850px);
   overflow-y: auto;
   width: 100%;
-  max-width: 800px; /* Max width for readability */
+  max-width: 800px;
   padding: 0;
   border: none;
   margin-top: 20px;
-  margin-bottom: 20px; /* This margin is between chat messages and the input area */
+  margin-bottom: 20px;
+  /* ensure space for sticky typing indicator above input */
+  padding-bottom: 12px;
 }
-
 .chat-messages-container ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
 .chat-messages-container ul li {
   margin-bottom: 15px;
-  padding: 12px 20px; 
-  border-radius: 25px; 
+  padding: 12px 20px;
+  border-radius: 25px;
   word-wrap: break-word;
   font-size: 16px;
   line-height: 1.5;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
-
 .chat-messages-container ul li.user-message {
-  background: #e6ffcc; /* Original light green for user */
-  color: #333; /* Dark text */
-  margin-left: auto; /* Pushes user messages to the right */
-  text-align: left; /* Aligns text to the left */
-  max-width: 30%; /* Max width for user bubbles */
+  background: #e6ffcc;
+  color: #333;
+  margin-left: auto;
+  text-align: left;
+  max-width: 30%;
 }
-
-/* Specific styles for bot messages (left-aligned) */
 .chat-messages-container ul li.bot-message {
-  background: #ffffff; /* White for bot messages */
-  color: #333; /* Dark text */
-  margin-right: auto; /* Keeps bot messages to the left */
-  text-align: left; /* Aligns text to the left */
-  max-width: 70%; /* Max width for bot bubbles */
+  background: #ffffff;
+  color: #333;
+  margin-right: auto;
+  text-align: left;
+  max-width: 70%;
 }
 
-/* Input and Send button container */
+/* Input area */
 .ask-container {
   width: 100%;
   max-width: 800px;
   display: flex;
   align-items: center;
   padding: 10px 15px;
-  background-color: #ffffff; /* White background for input area */
-  border-radius: 30px; /* Very rounded input area */
-  margin-top: auto; /* Pushes it to the bottom */
-  box-shadow: 0 1px 5px rgba(0,0,0,0.1); /* Subtle shadow for input area */
+  background-color: #ffffff;
+  border-radius: 30px;
+  margin-top: auto;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.1);
   margin-bottom: 5px;
 }
-
 .ask-container input {
   flex-grow: 1;
-  padding: 12px 20px; /* Padding for input */
+  padding: 12px 20px;
   border: none;
   background: transparent;
-  color: #333; /* Dark text */
+  color: #333;
   font-size: 16px;
   outline: none;
 }
-
-.ask-container input::placeholder {
-  color: #aaa; /* Lighter placeholder text */
-}
-
+.ask-container input::placeholder { color: #aaa; }
 .ask-container button {
   padding: 10px 20px;
   border: none;
-  border-radius: 25px; /* Rounded button */
-  background-color: #4CAF50; /* Original green send button */
+  border-radius: 25px;
+  background-color: #4CAF50;
   color: white;
   cursor: pointer;
   margin-left: 15px;
@@ -218,21 +207,76 @@ body {
   transition: background-color 0.2s ease;
   font-weight: 500;
 }
+.ask-container button:hover { background-color: #45a049; }
 
-.ask-container button:hover {
-  background-color: #45a049;
+/* Sidebar drawer header (shared) */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 16px;
 }
-
-/* --- Mobile Responsive Additions --- */
-
-/* Base reset for new elements */
-.mobile-header {
-  display: none;
+.sidebar-header .sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-
+.sidebar-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0;
+}
 .close-sidebar-btn {
-  display: none;
+  background: none;
+  border: none;
+  font-size: 32px;
+  line-height: 1;
+  color: #1a202c;
+  cursor: pointer;
+  padding: 4px 6px;
+  display: none; /* visible on mobile */
 }
+
+/* Typing indicator (InfoNest is thinking…) */
+.typing-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 16px;
+  background: #f1f1f1;
+  color: #555;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  margin: 8px 0 0 0;
+}
+.typing-indicator .dots {
+  display: inline-flex;
+  gap: 4px;
+}
+.typing-indicator .dot {
+  width: 6px;
+  height: 6px;
+  background: #9aa0a6;
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: pulse 1.2s infinite ease-in-out;
+}
+.typing-indicator .dot2 { animation-delay: 0.2s; }
+.typing-indicator .dot3 { animation-delay: 0.4s; }
+.typing-text { font-size: 13px; }
+@supports (position: sticky) {
+  .typing-indicator { position: sticky; bottom: 6px; }
+}
+@keyframes pulse {
+  0%, 80%, 100% { transform: scale(0.8); opacity: 0.3; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+/* Mobile responsive */
+.mobile-header { display: none; }
+.hamburger-btn { display: none; }
 
 /* Backdrop when sidebar open on mobile */
 .sidebar-backdrop {
@@ -243,41 +287,20 @@ body {
   backdrop-filter: blur(2px);
 }
 
-/* Prevent body/container scroll when menu open (optional) */
-.container.no-scroll {
-  overflow: hidden;
-}
+/* Prevent scroll when menu open */
+.container.no-scroll { overflow: hidden; }
 
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
     height: auto;
   }
-  
-  .new-chat-btn {
-    width: 87%;
-    position: fixed;
-    left: 10px;
-    right: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
 
-  .Log-Out-Btn {
-    width: 87%;
-    bottom: 10px;
-    position: fixed;
-    left: 10px;
-    right: 10px;
-  }
-
-  /* Top bar with centered logo + name */
+  /* Mobile header with hamburger on left */
   .mobile-header {
     position: fixed;
     top: 0;
-    left: 0;
-    right: 0;
+    left: 0; right: 0;
     height: 60px;
     background: #c7f0c4;
     display: flex;
@@ -285,63 +308,78 @@ body {
     justify-content: center;
     gap: 12px;
     z-index: 950;
-    cursor: pointer;
     box-shadow: 0 2px 6px rgba(0,0,0,0.12);
   }
+  .mobile-header h1 { font-size: 20px; margin: 0; font-weight: 700; }
+  .mobile-header .circle-logo { width: 42px; height: 42px; }
 
-  .mobile-header h1 {
-    font-size: 20px;
-    margin: 0;
-    font-weight: 700;
+  .hamburger-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  .hamburger-btn span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #1a202c;
+    border-radius: 2px;
+    margin-left: 2px;
   }
 
-  .mobile-header img.circle-logo {
-    width: 42px;
-    height: 42px;
-  }
+  /* Hide duplicate desktop logo section */
+  .logo-section { display: none; }
 
-  /* Hide desktop logo section duplicate inside sidebar (we show only once at top for desktop) */
-  .desktop-only {
-    display: none;
-  }
-
-  /* Sidebar turns into a sliding panel covering the whole screen */
+  /* Sidebar as full-screen drawer */
   .sidebar {
     position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
+    top: 0; left: 0; bottom: 0;
     width: 100%;
     max-width: 100%;
     transform: translateX(-100%);
     transition: transform 0.28s ease;
     z-index: 1000;
     overflow-y: auto;
-    padding-top: 70px; /* space for close button */
+    padding: 16px 18px 20px;
+    background: #c7f0c4;
+  }
+  .sidebar.open { transform: translateX(0); }
+
+  /* Sticky drawer header */
+  .sidebar-header {
+    position: sticky;
+    top: 0;
+    background: #c7f0c4;
+    padding: 4px 0 10px;
+    z-index: 5;
+    margin-bottom: 10px;
+  }
+  .close-sidebar-btn { display: block; position: absolute; top: 2.5px; right: 25px; }
+
+  /* Buttons fill width; not fixed */
+  .new-chat-btn,
+  .Log-Out-Btn {
+    width: 91%;
+    position: static;
+    left: auto; right: auto; bottom: auto; top: auto;
   }
 
-  .sidebar.open {
-    transform: translateX(0);
-  }
-
-  .close-sidebar-btn {
-    position: absolute;
-    top: 13px;
-    right: 42px;
-    background: none;
-    border: none;
-    font-size: 32px;
-    line-height: 1;
-    color: #1a202c;
-    cursor: pointer;
-    display: block;
-  }
-
-  /* Main content shifts below the fixed header */
+  /* Main content below header */
   .main-content {
     width: 100%;
     margin-left: 0;
-    padding: 80px 15px 90px; /* top accounts for header */
+    padding: 80px 15px 120px;
     box-sizing: border-box;
   }
 
@@ -349,13 +387,12 @@ body {
     max-height: calc(100vh - 200px);
   }
 
-  /* Optional: make input fixed at bottom like a chat app */
+  /* Input fixed like a chat app */
   .ask-container {
-    width: 88%;
     position: fixed;
     bottom: 10px;
-    left: 10px;
-    right: 10px;
-    z-index: 100;
+    left: 10px; right: 10px;
+    z-index: 110;
+    width: auto;
   }
 }
