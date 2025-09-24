@@ -1,0 +1,68 @@
+.fbk-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0 4px 0;
+  flex-wrap: wrap;
+}
+.fbk-label {
+  font-size: 13px;
+  color: #555;
+}
+.fbk-chip {
+  border: 1px solid #cce8cc;
+  background: #f6fff2;
+  color: #2c2c2c;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color .15s ease;
+}
+.fbk-chip:hover { background-color: #e6ffcc; }
+.fbk-chip:disabled { opacity: .6; cursor: not-allowed; }
+.fbk-chip.up {}
+.fbk-chip.down { border-color: #ffc9c9; background: #fff7f7; }
+.fbk-chip.down:hover { background: #ffecec; }
+.fbk-chip.comment {}
+
+.fbk-comment {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #e3e3e3;
+  border-radius: 10px;
+  padding: 8px;
+}
+.fbk-comment textarea {
+  width: 100%;
+  min-height: 70px;
+  resize: vertical;
+  border: 1px solid #e3e3e3;
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 14px;
+}
+.fbk-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+.fbk-submit {
+  background: #e6ffcc;
+  border: 1px solid #cce8cc;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.fbk-cancel {
+  background: #f6f6f6;
+  border: 1px solid #e3e3e3;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.fbk-thanks {
+  font-size: 13px;
+  color: #2f6b2f;
+}

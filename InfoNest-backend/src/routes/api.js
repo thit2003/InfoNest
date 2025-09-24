@@ -8,7 +8,7 @@ const ChatHistory = require('../models/ChatHistory');
 const KnowledgeBase = require('../models/KnowledgeBase');
 const axios = require('axios');
 const { RASA_BASE_URL } = require('../config/rasa');
-
+const Feedback = require('../models/Feedback');
 const authRoutes = require('../routes/auth');
 
 const app = express();
@@ -282,6 +282,53 @@ router.get('/history', protect, async (req, res) => {
   } catch (err) {
     console.error('Error fetching chat history:', err);
     res.status(500).json({ error: 'Server error while fetching chat history' });
+  }
+});
+
+// @route   POST /api/feedback
+// @desc    Submit feedback for a bot response (optionally tied to a ChatHistory record)
+// @access  Private
+router.post('/feedback', protect, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { historyId, rating, category, comment, meta } = req.body || {};
+
+    if (!rating && !comment) {
+      return res.status(400).json({ error: 'Provide at least a rating or a comment.' });
+    }
+
+    // Optional: validate rating/category
+    const doc = await Feedback.create({
+      user: userId,
+      history: historyId || undefined,
+      rating: rating || 'neutral',
+      category: category || '',
+      comment: comment || '',
+      meta: meta || {},
+    });
+
+    return res.status(201).json({ success: true, data: doc });
+  } catch (err) {
+    console.error('Error creating feedback:', err);
+    return res.status(500).json({ error: 'Server error while saving feedback.' });
+  }
+});
+
+// @route   GET /api/feedback/mine
+// @desc    Return feedback submitted by the authenticated user
+// @access  Private
+router.get('/feedback/mine', protect, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const docs = await Feedback.find({ user: userId })
+      .sort({ createdAt: -1 })
+      .limit(200)
+      .lean();
+
+    return res.status(200).json({ success: true, count: docs.length, data: docs });
+  } catch (err) {
+    console.error('Error fetching user feedback:', err);
+    return res.status(500).json({ error: 'Server error while fetching feedback.' });
   }
 });
 
