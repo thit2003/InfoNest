@@ -4,10 +4,18 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/Home.css';
+import '../styles/Suggestions.css';
 import { BACKEND_API_BASE } from '../config';
 import TypingIndicator from '../components/TypingIndicator';
 
 const infonestLogo = '/logo.png';
+
+// Edit these prompts as you like
+const SUGGESTION_PROMPTS = [
+  'What undergraduate programs does AU offer?',
+  'How do I apply for admission and what are the deadlines?',
+  'Tell me about gym hours on campus.'
+];
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -21,6 +29,9 @@ const HomePage = () => {
 
   // Typing indicator state
   const [isBotThinking, setIsBotThinking] = useState(false);
+
+  // Show prompt recommendations when there is no recent history
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -60,8 +71,12 @@ const HomePage = () => {
         setMessages(formattedMessages);
         setSidebarHistory(newSidebarHistory);
 
+        // If no history, keep greeting and show suggestions
         if (formattedMessages.length === 0) {
           setMessages([{ sender: 'bot', text: 'Hello! How can I help you today?' }]);
+          setShowSuggestions(true);
+        } else {
+          setShowSuggestions(false);
         }
       } else {
         console.error('Failed to fetch chat history:', response.data.error);
@@ -88,6 +103,7 @@ const HomePage = () => {
     setMessages((prev) => [...prev, userMessage]);
     setChatInput('');
     setIsBotThinking(true); // show typing indicator
+    setShowSuggestions(false); // hide suggestions after first send
 
     try {
       const response = await axios.post(
@@ -127,8 +143,16 @@ const HomePage = () => {
     }
   };
 
+  const handleSuggestionClick = (text) => {
+    if (isBotThinking) return;
+    sendMessage(text);
+  };
+
   const handleNewChat = () => {
     setMessages([{ sender: 'bot', text: 'Hello! How can I help you today?' }]);
+    // Do not toggle suggestions here; they should only appear when there is no history.
+    // If you want suggestions on every new chat, uncomment:
+    // setShowSuggestions(true);
   };
 
   const handleChatInputChange = (e) => setChatInput(e.target.value);
@@ -218,6 +242,24 @@ const HomePage = () => {
           className="main-content"
           onClick={isMobileSidebarOpen ? closeMobileSidebar : undefined}
         >
+          {showSuggestions && (
+            <div className="suggestions-container" role="region" aria-label="Prompt suggestions">
+              <p className="suggestions-title">Try one of these prompts:</p>
+              <div className="suggestion-chips">
+                {SUGGESTION_PROMPTS.map((p, i) => (
+                  <button
+                    key={i}
+                    className="suggestion-chip"
+                    onClick={() => handleSuggestionClick(p)}
+                    disabled={isBotThinking}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="chat-messages-container">
             <ul>
               {messages.map((msg, index) => (
