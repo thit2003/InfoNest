@@ -38,7 +38,7 @@ export default function FeedbackPage() {
       {items.length === 0 && <p>No feedback yet.</p>}
       <ul style={{ listStyle: 'none', padding: 0}}>
         {items.map((f) => (
-          <li key={f._id} style={{ border: '1px solid #eee', borderRadius: 8, padding: 12, marginBottom: 8 }}>
+          <li key={f._id} style={{ border: '1px solid #151414ff', borderRadius: 8, padding: 12, marginBottom: 8 }}>
             <div style={{ fontSize: 12, color: '#666' }}>
               {new Date(f.createdAt).toLocaleString()} • {f.rating || 'neutral'} {f.category ? `• ${f.category}` : ''}
             </div>

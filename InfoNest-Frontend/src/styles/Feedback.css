@@ -67,7 +67,7 @@
 
 .feedback-page {
   min-height: 100vh;
-  background-color: #fff; /* match your page color here */
+  background-color: #d4f5d3; /* match your page color here */
 
 }
 
@@ -78,7 +78,6 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #ffffff;
   border: 1px solid #cce8cc;
   color: #2f4f2f;
   font-size: 22px;
