@@ -1,5 +1,5 @@
 # InfoNest-Rasa-Bot/domain.yml
-version: "3.1" # Make sure this is "1.0" for Rasa 1.10.2
+version: "3.1"
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
@@ -16,7 +16,6 @@ intents:
   - ask_event_details
   - ask_tuition_fees
   - ask_general_university_info
-  # 21/7/2025 Update
   - ask_academic_calendar_deadlines
   - ask_course_registration
   - ask_campus_conflict
@@ -36,12 +35,12 @@ intents:
   - ask_housing_application
   - ask_international_student_support
   - ask_definition
-  - ask_location
-  - ask_founding_year
   - ask_ranking
-  - ask_programs
-  - clarify_entity
   - reset_context
+  - ask_founding_year
+  # - ask_programs
+  # - clarify_entity
+  # - ask_location
 
 entities:
   - Assumption University
@@ -100,7 +99,6 @@ responses:
   utter_ask_general_university_info:
   - text: "Let me look up some general information about Assumption University for you..."
 
-  # 21/7/2025 Update
   utter_ask_academic_calendar_deadlines:
   - text: "The Academic Calendar and deadlines are posted each semester on the Registrar's News page: https://registrar.au.edu/news/all/. Look for terms like 'Academic Calendar' or 'Add & Withdraw Course Deadline'."
 
@@ -174,18 +172,13 @@ actions:
   - utter_greet
   - utter_goodbye
   - utter_iamabot
-  # Add new utter actions here if you created new responses
   - utter_ask_admission_deadline
   - utter_ask_course_info
   - utter_ask_faculty_contact
   - utter_ask_event_details
   - utter_ask_tuition_fees
-  - utter_default # Ensure this is listed
-  # --- ADD NEW ACTION ---
-  - utter_ask_general_university_info # Add this line to the actions list
-  # --- End NEW ACTION ---
-
-  # 21/7/2025 Update
+  - utter_default
+  - utter_ask_general_university_info
   - utter_ask_academic_calendar_deadlines
   - utter_ask_course_registration
   - utter_ask_campus_conflict
@@ -206,9 +199,9 @@ actions:
   - utter_ask_international_student_support
   - action_set_current_entity
   - action_define_entity
-  - action_answer_location
-  - action_answer_founding_year
   - action_answer_ranking
-  - action_answer_programs
-  - action_disambiguate_entity
   - action_reset_context
+  - action_answer_founding_year
+  # - action_answer_programs
+  # - action_disambiguate_entity
+  # - action_answer_location

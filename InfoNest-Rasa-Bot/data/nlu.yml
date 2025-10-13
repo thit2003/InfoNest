@@ -1,9 +1,6 @@
 version: "3.0"
 nlu:
 
-# =====================
-# ENTITY EXAMPLES
-# =====================
 - intent: ask_definition
   examples: |
     - What is [Assumption University]?
@@ -13,21 +10,18 @@ nlu:
     - Provide a description of [Assumption University]
     - [Assumption University]
     - Define [Assumption University]
-    - Describe [Yale]
+    - Describe [Assumption University]
 
-# =====================
-# FOLLOW-UP INTENTS WITH PRONOUNS
-# =====================
-- intent: ask_location
-  examples: |
-    - Where is it located?
-    - Where is it?
-    - Where is that university?
-    - In which country is it?
-    - Where can you find it geographically?
-    - What is its location?
-    - Where is the institution situated?
-    - Where is [Assumption University] located?
+# - intent: ask_location
+#   examples: |
+#     - Where is it located?
+#     - Where is it?
+#     - Where is that university?
+#     - In which country is it?
+#     - Where can you find it geographically?
+#     - What is its location?
+#     - Where is the institution situated?
+#     - Where is [Assumption University] located?
 
 - intent: ask_founding_year
   examples: |
@@ -46,31 +40,25 @@ nlu:
     - What's the ranking of [Assumption University]?
     - Is it highly ranked?
 
-- intent: ask_programs
-  examples: |
-    - What programs does it offer?
-    - What courses are available there?
-    - Which faculties does it have?
-    - Tell me its degree programs
-    - What majors are available?
-    - What programs does [Assumption University] have?
+# - intent: ask_programs
+#   examples: |
+#     - What programs does it offer?
+#     - What courses are available there?
+#     - Which faculties does it have?
+#     - Tell me its degree programs
+#     - What majors are available?
+#     - What programs does [Assumption University] have?
 
-# =====================
-# CLARIFICATION INTENT
-# (User provides a name after a clarify prompt)
-# =====================
-- intent: clarify_entity
-  examples: |
-    - I meant [Assumption University]
-    - I mean [Assumption University]
-    - The first one
-    - The second one
-    - I meant the Assumption one
-    - Assumption
+# - intent: clarify_entity
+#   examples: |
+#     - I meant [Assumption University]
+#     - I mean [Assumption University]
+#     - The first one
+#     - The second one
+#     - I meant the Assumption one
+#     - Assumption
 
-# =====================
 # RESET CONTEXT
-# =====================
 - intent: reset_context
   examples: |
     - forget that

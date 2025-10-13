@@ -1,8 +1,6 @@
-# InfoNest-Rasa-Bot/data/rules.yml (Add this rule)
+# InfoNest-Rasa-Bot/data/rules.yml
     version: "3.1"
     rules:
-      # ... existing rules ...
-
       - rule: Fallback
         steps:
         - intent: nlu_fallback
@@ -14,10 +12,10 @@
         - action: action_set_current_entity
         - action: action_define_entity
 
-      - rule: Clarify entity after disambiguation intent
-        steps:
-        - intent: clarify_entity
-        - action: action_disambiguate_entity
+      # - rule: Clarify entity after disambiguation intent
+      #   steps:
+      #   - intent: clarify_entity
+      #   - action: action_disambiguate_entity
 
       - rule: Reset context
         steps:
