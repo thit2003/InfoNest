@@ -1,19 +1,19 @@
 // HomePage.js
-
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "../styles/Home.css";
 import "../styles/Suggestions.css";
-import { BACKEND_API_BASE } from "../config";
 import TypingIndicator from "../components/TypingIndicator";
 import FeedbackBar from "../components/FeedbackBar";
-import { Link } from 'react-router-dom';
 import HelpFab from '../components/HelpFab';
+import { BACKEND_API_BASE } from "../config";
+import "../styles/ChatLinks.css";
+import DOMPurify from "dompurify";
+import { linkifyText } from "../utils/linkify";
 
 const infonestLogo = "/logo.png";
 
-// Edit these prompts as you like
 const SUGGESTION_PROMPTS = [
   "What undergraduate programs does AU offer?",
   "How do I apply for admission and what are the deadlines?",
@@ -26,14 +26,8 @@ const HomePage = () => {
   const [messages, setMessages] = useState([]);
   const [chatInput, setChatInput] = useState("");
   const [sidebarHistory, setSidebarHistory] = useState([]);
-
-  // Mobile sidebar state
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-
-  // Typing indicator state
   const [isBotThinking, setIsBotThinking] = useState(false);
-
-  // Show prompt recommendations when there is no recent history
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
@@ -45,7 +39,6 @@ const HomePage = () => {
       navigate("/login");
       return;
     }
-
     if (storedUsername) setUsername(storedUsername);
 
     if (messages.length === 0) {
@@ -62,27 +55,20 @@ const HomePage = () => {
 
       if (response.status === 200) {
         const historyData = response.data.data;
-        const formattedMessages = [];
-        const newSidebarHistory = [];
+        const formatted = [];
+        const side = [];
 
-        historyData.forEach((entry) => {
-          formattedMessages.push({ sender: "user", text: entry.userMessage });
-          formattedMessages.push({
-            sender: "bot",
-            text: entry.botResponse,
-            historyId: entry._id,
-          });
-          newSidebarHistory.push(entry.userMessage.substring(0, 25) + "...");
+        historyData.forEach(entry => {
+          formatted.push({ sender: "user", text: entry.userMessage });
+            formatted.push({ sender: "bot", text: entry.botResponse, historyId: entry._id });
+          side.push(entry.userMessage.substring(0, 25) + "...");
         });
 
-        setMessages(formattedMessages);
-        setSidebarHistory(newSidebarHistory);
+        setMessages(formatted);
+        setSidebarHistory(side);
 
-        // If no history, keep greeting and show suggestions
-        if (formattedMessages.length === 0) {
-          setMessages([
-            { sender: "bot", text: "Hello! How can I help you today?" },
-          ]);
+        if (formatted.length === 0) {
+          setMessages([{ sender: "bot", text: "Hello! How can I help you today?" }]);
           setShowSuggestions(true);
         } else {
           setShowSuggestions(false);
@@ -93,7 +79,7 @@ const HomePage = () => {
       }
     } catch (error) {
       console.error("Network error fetching chat history:", error);
-      if (error.response && error.response.status === 401) {
+      if (error.response?.status === 401) {
         alert("Session expired. Please log in again.");
         localStorage.removeItem("token");
         localStorage.removeItem("username");
@@ -108,11 +94,10 @@ const HomePage = () => {
     const token = localStorage.getItem("token");
     if (!token || messageText.trim() === "") return;
 
-    const userMessage = { sender: "user", text: messageText };
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages(prev => [...prev, { sender: "user", text: messageText }]);
     setChatInput("");
-    setIsBotThinking(true); // show typing indicator
-    setShowSuggestions(false); // hide suggestions after first send
+    setIsBotThinking(true);
+    setShowSuggestions(false);
 
     try {
       const response = await axios.post(
@@ -122,35 +107,21 @@ const HomePage = () => {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
-          },
+          }
         }
       );
 
       if (response.status === 200) {
-        const botResponse = response.data.botResponse;
-        const historyId = response.data.historyId; // <- capture historyId
-        setMessages((prev) => [
-          ...prev,
-          { sender: "bot", text: botResponse, historyId },
-        ]);
-        setSidebarHistory((prevSidebar) => [
-          ...prevSidebar,
-          messageText.substring(0, 25) + "...",
-        ]);
+        const { botResponse, historyId } = response.data;
+        setMessages(prev => [...prev, { sender: "bot", text: botResponse, historyId }]);
+        setSidebarHistory(prev => [...prev, messageText.substring(0, 25) + "..."]);
       } else {
-        const errorData = response.data;
-        setMessages((prev) => [
-          ...prev,
-          {
-            sender: "bot",
-            text: `Error: ${errorData.error || "Failed to get bot response."}`,
-          },
-        ]);
+        setMessages(prev => [...prev, { sender: "bot", text: `Error: ${response.data.error || "Failed to get bot response."}` }]);
       }
     } catch (error) {
       console.error("Network error sending message:", error);
       let errorMessage = "Network error. Could not connect to chatbot.";
-      if (error.response && error.response.status === 401) {
+      if (error.response?.status === 401) {
         errorMessage = "Session expired. Please log in again.";
         localStorage.removeItem("token");
         localStorage.removeItem("username");
@@ -158,9 +129,9 @@ const HomePage = () => {
       } else if (error.response?.data?.error) {
         errorMessage = `Error: ${error.response.data.error}`;
       }
-      setMessages((prev) => [...prev, { sender: "bot", text: errorMessage }]);
+      setMessages(prev => [...prev, { sender: "bot", text: errorMessage }]);
     } finally {
-      setIsBotThinking(false); // hide typing indicator
+      setIsBotThinking(false);
     }
   };
 
@@ -171,14 +142,12 @@ const HomePage = () => {
 
   const handleNewChat = () => {
     setMessages([{ sender: "bot", text: "Hello! How can I help you today?" }]);
-    // Do not toggle suggestions here; they should only appear when there is no history.
-    // If you want suggestions on every new chat, uncomment:
     setShowSuggestions(true);
   };
 
-  const handleChatInputChange = (e) => setChatInput(e.target.value);
+  const handleChatInputChange = e => setChatInput(e.target.value);
   const handleSendButtonClick = () => sendMessage(chatInput);
-  const handleInputKeyPress = (e) => {
+  const handleInputKeyPress = e => {
     if (e.key === "Enter" && !isBotThinking) sendMessage(chatInput);
   };
 
@@ -188,22 +157,24 @@ const HomePage = () => {
     navigate("/login");
   };
 
-  const toggleMobileSidebar = () => setIsMobileSidebarOpen((prev) => !prev);
+  const toggleMobileSidebar = () => setIsMobileSidebarOpen(prev => !prev);
   const closeMobileSidebar = () => setIsMobileSidebarOpen(false);
 
   useEffect(() => {
-    const messagesContainer = document.querySelector(
-      ".chat-messages-container"
-    );
+    const messagesContainer = document.querySelector(".chat-messages-container");
     if (messagesContainer) {
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
   }, [messages, isBotThinking]);
 
+  function renderMessageHtml(msg) {
+    const htmlWithLinks = linkifyText(msg.text);
+    return DOMPurify.sanitize(htmlWithLinks, { USE_PROFILES: { html: true } });
+  }
+
   return (
     <>
-    <HelpFab hidden={isMobileSidebarOpen} />
-      {/* Mobile header: hamburger on the left, logo + name centered */}
+      <HelpFab hidden={isMobileSidebarOpen} />
       <div className="mobile-header">
         {!isMobileSidebarOpen && (
           <button
@@ -211,31 +182,29 @@ const HomePage = () => {
             onClick={toggleMobileSidebar}
             aria-label="Open recent chats"
           >
-            <span />
-            <span />
-            <span />
+            <span /><span /><span />
           </button>
         )}
         <img src={infonestLogo} alt="InfoNest Logo" className="circle-logo" />
         <h1>InfoNest</h1>
         {!isMobileSidebarOpen && (
-  <Link
-    to="/feedback"
-    className="help-fab"
-    aria-label="Feedback & Help"
-    title="Feedback & Help"
-  >
-    {/* Question mark in a circle icon */}
-    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <circle cx="12" cy="12" r="10" strokeWidth="1.8" />
-      <path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.8-2.5 2-2.5 3.5" strokeWidth="1.8" strokeLinecap="round" />
-      <circle cx="12" cy="17" r="1" fill="currentColor" />
-    </svg>
-  </Link>
-)}
+          <Link
+            to="/feedback"
+            className="help-fab"
+            aria-label="Feedback & Help"
+            title="Feedback & Help"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="10" strokeWidth="1.8" />
+              <path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.8-2.5 2-2.5 3.5"
+                    strokeWidth="1.8" strokeLinecap="round" />
+              <circle cx="12" cy="17" r="1" fill="currentColor" />
+            </svg>
+          </Link>
+        )}
       </div>
 
-      {/* Backdrop when sidebar open on mobile */}
       {isMobileSidebarOpen && (
         <div className="sidebar-backdrop" onClick={closeMobileSidebar} />
       )}
@@ -244,68 +213,37 @@ const HomePage = () => {
         <aside className={`sidebar ${isMobileSidebarOpen ? "open" : ""}`}>
           <div className="sidebar-header">
             <div className="sidebar-brand">
-              <img
-                src={infonestLogo}
-                alt="InfoNest Logo"
-                className="circle-logo"
-              />
+              <img src={infonestLogo} alt="InfoNest Logo" className="circle-logo" />
               <h1>InfoNest</h1>
             </div>
             <button
               className="close-sidebar-btn"
               onClick={closeMobileSidebar}
               aria-label="Close sidebar"
-            >
-              ×
-            </button>
+            >×</button>
           </div>
 
           <button className="new-chat-btn" onClick={handleNewChat}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-            >
-              <path
-                d="M12 5v14M5 12h14"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M12 5v14M5 12h14" strokeWidth="2" strokeLinecap="round" />
             </svg>
             New Chat
           </button>
 
           <p className="recent-title">RECENT</p>
           <ul className="recent-list">
-            {sidebarHistory.map((entry, index) => (
-              <li key={index}>{entry}</li>
+            {sidebarHistory.map((entry, i) => (
+              <li key={i}>{entry}</li>
             ))}
           </ul>
 
           <button className="Log-Out-Btn" onClick={handleLogout}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
-              viewBox="0 0 14 14"
-            >
-              <path
-                d="M5 2h5v10H5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.2"
-              />
-              <path
-                d="M7 7H1m0 0 2-2m-2 2 2 2"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 14 14">
+              <path d="M5 2h5v10H5" fill="none" stroke="currentColor" strokeWidth="1.2" />
+              <path d="M7 7H1m0 0 2-2m-2 2 2 2"
+                    fill="none" stroke="currentColor" strokeWidth="1.2"
+                    strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             Logout
           </button>
@@ -316,11 +254,7 @@ const HomePage = () => {
           onClick={isMobileSidebarOpen ? closeMobileSidebar : undefined}
         >
           {showSuggestions && (
-            <div
-              className="suggestions-container"
-              role="region"
-              aria-label="Prompt suggestions"
-            >
+            <div className="suggestions-container" role="region" aria-label="Prompt suggestions">
               <p className="suggestions-title">Try one of these prompts:</p>
               <div className="suggestion-chips">
                 {SUGGESTION_PROMPTS.map((p, i) => (
@@ -337,25 +271,25 @@ const HomePage = () => {
             </div>
           )}
 
-          <div className="chat-messages-container">
-            <ul>
-              {messages.map((msg, index) => (
-                <li
-                  key={index}
-                  className={
-                    msg.sender === "user" ? "user-message" : "bot-message"
-                  }
-                >
-                  {msg.text}
-                  {msg.sender === "bot" && msg.historyId && (
-                    <FeedbackBar historyId={msg.historyId} />
-                  )}
-                </li>
-              ))}
-            </ul>
-            {/* InfoNest is thinking indicator */}
-            <TypingIndicator visible={isBotThinking} />
-          </div>
+            <div className="chat-messages-container">
+              <ul>
+                {messages.map((msg, index) => (
+                  <li
+                    key={index}
+                    className={msg.sender === "user" ? "user-message" : "bot-message"}
+                  >
+                    <span
+                      className="message-text"
+                      dangerouslySetInnerHTML={{ __html: renderMessageHtml(msg) }}
+                    />
+                    {msg.sender === "bot" && msg.historyId && (
+                      <FeedbackBar historyId={msg.historyId} />
+                    )}
+                  </li>
+                ))}
+              </ul>
+              <TypingIndicator visible={isBotThinking} />
+            </div>
 
           <div className="ask-container">
             <input

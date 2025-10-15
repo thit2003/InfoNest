@@ -1,0 +1,8 @@
+.chat-link {
+  color: #0a66c2;
+  text-decoration: underline;
+  word-break: break-word;
+}
+.chat-link:hover {
+  text-decoration: none;
+}
