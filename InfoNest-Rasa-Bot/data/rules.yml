@@ -17,7 +17,7 @@
       #   - intent: clarify_entity
       #   - action: action_disambiguate_entity
 
-      - rule: Reset context
-        steps:
-        - intent: reset_context
-        - action: action_reset_context
+      # - rule: Reset context
+      #   steps:
+      #   - intent: reset_context
+      #   - action: action_reset_context

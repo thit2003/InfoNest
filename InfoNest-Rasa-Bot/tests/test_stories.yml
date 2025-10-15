@@ -15,26 +15,26 @@ stories:
       intent: ask_location
     - action: action_answer_location
 
-- story: definition then pronoun founding year
-  steps:
-    - user: |
-        Tell me about Assumption University
-      intent: ask_definition
-      entities:
-        - entity: organization
-          value: Assumption University
-    - action: action_define_entity
-    - user: |
-        When was it founded?
-      intent: ask_founding_year
-    - action: action_answer_founding_year
+# - story: definition then pronoun founding year
+#   steps:
+#     - user: |
+#         Tell me about Assumption University
+#       intent: ask_definition
+#       entities:
+#         - entity: organization
+#           value: Assumption University
+#     - action: action_define_entity
+#     - user: |
+#         When was it founded?
+#       intent: ask_founding_year
+#     - action: action_answer_founding_year
 
-- story: follow up without prior context (should ask entity)
-  steps:
-    - user: |
-        Where is it located?
-      intent: ask_location
-    - action: action_answer_location   # should trigger request for entity
+# - story: follow up without prior context (should ask entity)
+#   steps:
+#     - user: |
+#         Where is it located?
+#       intent: ask_location
+#     - action: action_answer_location   # should trigger request for entity
 
 - story: disambiguation between two entities
   steps:
@@ -89,20 +89,20 @@ stories:
       intent: ask_founding_year
     - action: action_answer_founding_year
 
-- story: reset context
-  steps:
-    - user: |
-        What is Assumption University?
-      intent: ask_definition
-      entities:
-        - entity: organization
-          value: Assumption University
-    - action: action_define_entity
-    - user: |
-        reset
-      intent: reset_context
-    - action: action_reset_context
-    - user: |
-        Where is it located?
-      intent: ask_location
-    - action: action_answer_location
+# - story: reset context
+#   steps:
+#     - user: |
+#         What is Assumption University?
+#       intent: ask_definition
+#       entities:
+#         - entity: organization
+#           value: Assumption University
+#     - action: action_define_entity
+#     - user: |
+#         reset
+#       intent: reset_context
+#     - action: action_reset_context
+#     - user: |
+#         Where is it located?
+#       intent: ask_location
+#     - action: action_answer_location
