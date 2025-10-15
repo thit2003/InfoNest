@@ -6,11 +6,11 @@
         - intent: nlu_fallback
         - action: utter_ask_general_university_info
 
-      - rule: Set entity when mentioned
-        steps:
-        - intent: ask_definition
-        - action: action_set_current_entity
-        - action: action_define_entity
+      # - rule: Set entity when mentioned
+      #   steps:
+      #   - intent: ask_definition
+      #   - action: action_set_current_entity
+      #   - action: action_define_entity
 
       # - rule: Clarify entity after disambiguation intent
       #   steps:

@@ -34,7 +34,7 @@ intents:
   - ask_sports_facilities
   - ask_housing_application
   - ask_international_student_support
-  - ask_definition
+  # - ask_definition
   # - ask_ranking
   # - reset_context
   # - ask_founding_year
@@ -42,30 +42,30 @@ intents:
   # - clarify_entity
   # - ask_location
 
-entities:
-  - Assumption University
+# entities:
+#   - Assumption University
 
-slots:
-  current_entity:
-    type: text
-    influence_conversation: true
-    mappings:
-      - type: custom
-  current_entity_id:
-    type: text
-    influence_conversation: false
-    mappings:
-      - type: custom
-  recent_entities:
-    type: list
-    influence_conversation: false
-    mappings:
-      - type: custom
-  pending_disambiguation:
-    type: list
-    influence_conversation: true
-    mappings:
-      - type: custom
+# slots:
+#   current_entity:
+#     type: text
+#     influence_conversation: true
+#     mappings:
+#       - type: custom
+#   current_entity_id:
+#     type: text
+#     influence_conversation: false
+#     mappings:
+#       - type: custom
+#   recent_entities:
+#     type: list
+#     influence_conversation: false
+#     mappings:
+#       - type: custom
+#   pending_disambiguation:
+#     type: list
+#     influence_conversation: true
+#     mappings:
+#       - type: custom
 
 responses:
   utter_greet:
@@ -153,20 +153,20 @@ responses:
   utter_ask_international_student_support:
   - text: "International students can contact Room L101 (Hua Mak) or CL118 (Suvarnabhumi). Visa and orientation updates are posted at http://www.oia.au.edu/."
 
-  utter_request_entity:
-    - text: "Which institution are you asking about?"
+  # utter_request_entity:
+  #   - text: "Which institution are you asking about?"
 
-  utter_disambiguate_entity:
-    - text: "I found multiple matches: {options}. Which one did you mean?"
+  # utter_disambiguate_entity:
+  #   - text: "I found multiple matches: {options}. Which one did you mean?"
 
-  utter_unknown_entity:
-    - text: "I don't have data for {entity}."
+  # utter_unknown_entity:
+  #   - text: "I don't have data for {entity}."
 
-  utter_context_cleared:
-    - text: "Context cleared. You can start with a new institution."
+  # utter_context_cleared:
+  #   - text: "Context cleared. You can start with a new institution."
 
-  utter_ask_rephrase:
-    - text: "Could you rephrase or mention the institution name?"
+  # utter_ask_rephrase:
+  #   - text: "Could you rephrase or mention the institution name?"
 
 actions:
   - utter_greet
@@ -197,11 +197,11 @@ actions:
   - utter_ask_sports_facilities
   - utter_ask_housing_application
   - utter_ask_international_student_support
-  - action_set_current_entity
-  - action_define_entity
+  # - action_set_current_entity
+  # - action_define_entity
   # - action_answer_ranking
   # - action_reset_context
   # - action_answer_founding_year
   # - action_answer_programs
   # - action_disambiguate_entity
-  - action_answer_location
+  # - action_answer_location

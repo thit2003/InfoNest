@@ -1,27 +1,27 @@
 version: "3.0"
 nlu:
 
-- intent: ask_definition
-  examples: |
-    - What is [Assumption University]?
-    - Give me info about [Assumption University]
-    - Tell me about [Assumption University]
-    - I'd like details on [Assumption University]
-    - Provide a description of [Assumption University]
-    - [Assumption University]
-    - Define [Assumption University]
-    - Describe [Assumption University]
+# - intent: ask_definition
+#   examples: |
+#     - What is [Assumption University]?
+#     - Give me info about [Assumption University]
+#     - Tell me about [Assumption University]
+#     - I'd like details on [Assumption University]
+#     - Provide a description of [Assumption University]
+#     - [Assumption University]
+#     - Define [Assumption University]
+#     - Describe [Assumption University]
 
-- intent: ask_location
-  examples: |
-    - Where is it located?
-    - Where is it?
-    - Where is that university?
-    - In which country is it?
-    - Where can you find it geographically?
-    - What is its location?
-    - Where is the institution situated?
-    - Where is [Assumption University] located?
+# - intent: ask_location
+#   examples: |
+#     - Where is it located?
+#     - Where is it?
+#     - Where is that university?
+#     - In which country is it?
+#     - Where can you find it geographically?
+#     - What is its location?
+#     - Where is the institution situated?
+#     - Where is [Assumption University] located?
 
 # - intent: ask_founding_year
 #   examples: |

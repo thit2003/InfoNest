@@ -1,19 +1,19 @@
 version: "3.0"
 stories:
 
-- story: definition then pronoun location
-  steps:
-    - user: |
-        What is Assumption University?
-      intent: ask_definition
-      entities:
-        - entity: organization
-          value: Assumption University
-    - action: action_define_entity
-    - user: |
-        Where is it located?
-      intent: ask_location
-    - action: action_answer_location
+# - story: definition then pronoun location
+#   steps:
+#     - user: |
+#         What is Assumption University?
+#       intent: ask_definition
+#       entities:
+#         - entity: organization
+#           value: Assumption University
+#     - action: action_define_entity
+#     - user: |
+#         Where is it located?
+#       intent: ask_location
+#     - action: action_answer_location
 
 # - story: definition then pronoun founding year
 #   steps:
