@@ -12,7 +12,7 @@ pipeline:
   - name: CountVectorsFeaturizer
     analyzer: word
   - name: DIETClassifier
-    epochs: 300
+    epochs: 200
     constrain_similarities: true
   - name: EntitySynonymMapper
   - name: FallbackClassifier        # Replaces old FallbackPolicy thresholds
@@ -24,7 +24,7 @@ policies:
     max_history: 10
   - name: TEDPolicy
     max_history: 5
-    epochs: 200
+    epochs: 150
     constrain_similarities: true
   - name: RulePolicy
     core_fallback_action_name: "utter_ask_general_university_info"

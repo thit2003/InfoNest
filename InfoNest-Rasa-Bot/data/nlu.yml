@@ -23,22 +23,22 @@ nlu:
     - Where is the institution situated?
     - Where is [Assumption University] located?
 
-- intent: ask_founding_year
-  examples: |
-    - When was it founded?
-    - What year was it established?
-    - In which year was it created?
-    - When did it start?
-    - What is its founding year?
-    - When was [Assumption University] founded?
+# - intent: ask_founding_year
+#   examples: |
+#     - When was it founded?
+#     - What year was it established?
+#     - In which year was it created?
+#     - When did it start?
+#     - What is its founding year?
+#     - When was [Assumption University] founded?
 
-- intent: ask_ranking
-  examples: |
-    - What is its ranking?
-    - How is it ranked globally?
-    - Where does it rank internationally?
-    - What's the ranking of [Assumption University]?
-    - Is it highly ranked?
+# - intent: ask_ranking
+#   examples: |
+#     - What is its ranking?
+#     - How is it ranked globally?
+#     - Where does it rank internationally?
+#     - What's the ranking of [Assumption University]?
+#     - Is it highly ranked?
 
 # - intent: ask_programs
 #   examples: |
@@ -59,10 +59,10 @@ nlu:
 #     - Assumption
 
 # RESET CONTEXT
-- intent: reset_context
-  examples: |
-    - forget that
-    - clear context
-    - reset
-    - start over
-    - new topic
+# - intent: reset_context
+#   examples: |
+#     - forget that
+#     - clear context
+#     - reset
+#     - start over
+#     - new topic

@@ -35,9 +35,9 @@ intents:
   - ask_housing_application
   - ask_international_student_support
   - ask_definition
-  - ask_ranking
-  - reset_context
-  - ask_founding_year
+  # - ask_ranking
+  # - reset_context
+  # - ask_founding_year
   # - ask_programs
   # - clarify_entity
   # - ask_location
@@ -199,9 +199,9 @@ actions:
   - utter_ask_international_student_support
   - action_set_current_entity
   - action_define_entity
-  - action_answer_ranking
-  - action_reset_context
-  - action_answer_founding_year
+  # - action_answer_ranking
+  # - action_reset_context
+  # - action_answer_founding_year
   # - action_answer_programs
   # - action_disambiguate_entity
-  # - action_answer_location
+  - action_answer_location
