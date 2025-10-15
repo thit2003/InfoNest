@@ -58,7 +58,6 @@ nlu:
     - I meant the Assumption one
     - Assumption
 
-RESET CONTEXT
 - intent: reset_context
   examples: |
     - forget that
