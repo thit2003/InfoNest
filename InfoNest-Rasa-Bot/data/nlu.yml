@@ -1,68 +1,68 @@
 version: "3.0"
 nlu:
 
-# - intent: ask_definition
-#   examples: |
-#     - What is [Assumption University]?
-#     - Give me info about [Assumption University]
-#     - Tell me about [Assumption University]
-#     - I'd like details on [Assumption University]
-#     - Provide a description of [Assumption University]
-#     - [Assumption University]
-#     - Define [Assumption University]
-#     - Describe [Assumption University]
+- intent: ask_definition
+  examples: |
+    - What is [Assumption University]?
+    - Give me info about [Assumption University]
+    - Tell me about [Assumption University]
+    - I'd like details on [Assumption University]
+    - Provide a description of [Assumption University]
+    - [Assumption University]
+    - Define [Assumption University]
+    - Describe [Assumption University]
 
-# - intent: ask_location
-#   examples: |
-#     - Where is it located?
-#     - Where is it?
-#     - Where is that university?
-#     - In which country is it?
-#     - Where can you find it geographically?
-#     - What is its location?
-#     - Where is the institution situated?
-#     - Where is [Assumption University] located?
+- intent: ask_location
+  examples: |
+    - Where is it located?
+    - Where is it?
+    - Where is that university?
+    - In which country is it?
+    - Where can you find it geographically?
+    - What is its location?
+    - Where is the institution situated?
+    - Where is [Assumption University] located?
 
-# - intent: ask_founding_year
-#   examples: |
-#     - When was it founded?
-#     - What year was it established?
-#     - In which year was it created?
-#     - When did it start?
-#     - What is its founding year?
-#     - When was [Assumption University] founded?
+- intent: ask_founding_year
+  examples: |
+    - When was it founded?
+    - What year was it established?
+    - In which year was it created?
+    - When did it start?
+    - What is its founding year?
+    - When was [Assumption University] founded?
 
-# - intent: ask_ranking
-#   examples: |
-#     - What is its ranking?
-#     - How is it ranked globally?
-#     - Where does it rank internationally?
-#     - What's the ranking of [Assumption University]?
-#     - Is it highly ranked?
+- intent: ask_ranking
+  examples: |
+    - What is its ranking?
+    - How is it ranked globally?
+    - Where does it rank internationally?
+    - What's the ranking of [Assumption University]?
+    - Is it highly ranked?
 
-# - intent: ask_programs
-#   examples: |
-#     - What programs does it offer?
-#     - What courses are available there?
-#     - Which faculties does it have?
-#     - Tell me its degree programs
-#     - What majors are available?
-#     - What programs does [Assumption University] have?
+- intent: ask_programs
+  examples: |
+    - What programs does it offer?
+    - What courses are available there?
+    - Which faculties does it have?
+    - Tell me its degree programs
+    - What majors are available?
+    - What programs does [Assumption University] have?
 
-# - intent: clarify_entity
-#   examples: |
-#     - I meant [Assumption University]
-#     - I mean [Assumption University]
-#     - The first one
-#     - The second one
-#     - I meant the Assumption one
-#     - Assumption
+- intent: clarify_entity
+  examples: |
+    - I meant [Assumption University]
+    - I mean [Assumption University]
+    - The first one
+    - The second one
+    - I meant the Assumption one
+    - Assumption
 
-# RESET CONTEXT
-# - intent: reset_context
-#   examples: |
-#     - forget that
-#     - clear context
-#     - reset
-#     - start over
-#     - new topic
+RESET CONTEXT
+- intent: reset_context
+  examples: |
+    - forget that
+    - clear context
+    - reset
+    - start over
+    - new topic
